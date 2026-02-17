@@ -1,307 +1,144 @@
-# ⚡ ItsMyScreen — Real-time Polling App
+<div align="center">
 
-Create instant polls, share them with anyone, and watch votes roll in live. No sign-up required. Fast, fair, and futuristic.
+# ⚡ ItsMyScreen
+### The Future of Real-Time Polling
 
-**Public URL:** [itsmyscreen-by-sriram.vercel.app](https://itsmyscreen-by-sriram.vercel.app)  
-**Repository:** [github.com/SriramDivi1/ItsMyScreen](https://github.com/SriramDivi1/ItsMyScreen)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?style=for-the-badge&logo=next.js&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![Supabase](https://img.shields.io/badge/Supabase-Backend-3FCF8E?logo=supabase)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-Styling-38B2AC?logo=tailwindcss)
-![License](https://img.shields.io/badge/License-MIT-blue)
+**Create instant polls. Share with anyone. Watch votes roll in live.**  
+*Fast, fair, and futuristic. No sign-up required.*
 
----
+[**🚀 Live Demo**](https://itsmyscreen-by-sriram.vercel.app) · [**📂 Repository**](https://github.com/SriramDivi1/ItsMyScreen)
 
-## 📋 Assignment Compliance
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSriramDivi1%2FItsMyScreen)
 
-| Requirement | Implementation |
-|-------------|----------------|
-| **1. Poll creation** | Create poll with question + 2–10 options; shareable link generated after creation |
-| **2. Join by link** | Anyone with `/poll/[id]` link can view and vote (single-choice) |
-| **3. Real-time results** | Supabase Realtime + 5s polling fallback; all viewers see updates without refresh |
-| **4. Fairness (2+ mechanisms)** | (1) Voter token, (2) Vote cooldown — see below |
-| **5. Persistence** | PostgreSQL via Supabase; polls and votes persist; links work after refresh |
-| **6. Deployment** | Public URL on Vercel |
+</div>
 
 ---
 
-## 📝 Submission Notes (for form)
+## ✨ Features That Wow
 
-### Two fairness / anti-abuse mechanisms
-
-1. **Voter token (one vote per device)**  
-   - **What it does:** Each browser gets a unique token (`crypto.randomUUID`) stored in `localStorage`. The database enforces `unique(poll_id, voter_token)` so each token can vote only once per poll.  
-   - **What it prevents:** The same user voting multiple times from the same browser on the same poll.  
-   - **Limitations:** Clearing `localStorage`, using incognito/private mode, or a different browser/device creates a new token and allows another vote. Acceptable for a no-sign-up product.
-
-2. **Vote cooldown (2 seconds)**  
-   - **What it does:** A 2-second cooldown between vote attempts (including changing one’s vote). If the user tries again within 2 seconds, the request is blocked and a toast is shown.  
-   - **What it prevents:** Accidental double-clicks, rapid automated clicking, and bot-style abuse.  
-   - **Limitations:** Determined attackers could space out votes; cooldown mainly improves UX and slows basic abuse.
-
-**Additional integrity:** The `vote` and `change_vote` RPCs validate that the selected option belongs to the poll before counting, preventing cross-poll vote injection and malformed requests.
-
-### Edge cases handled
-
-- **Invalid poll ID** — "Poll not found" page with navigation to home
-- **Duplicate options** — Client-side validation, form highlights duplicates
-- **Option validation** — RPC rejects votes for options that don’t belong to the poll
-- **Clipboard fallback** — Copy link uses `document.execCommand('copy')` if `navigator.clipboard` is unavailable
-- **Voter token fallback** — Session-based token if `localStorage` fails (e.g. private mode)
-- **Realtime fallback** — 5-second polling when Realtime events don’t arrive
-- **Input limits** — Question (200), description (300), options (100) chars; sanitized before DB insert
-
-### Known limitations / what could be improved next
-
-- No poll closure/expiry — polls stay open indefinitely
-- Voter token is device-based — multiple devices = multiple votes per person
-- No authentication — no ownership of polls; anyone can create
-- No rate limiting on API — relies on Supabase defaults
-- Could add: poll expiry, CAPTCHA, email verification, or optional sign-in for stricter fairness
+| Feature | Description |
+| :--- | :--- |
+| **🚀 Instant Creation** | Create a poll in **< 10 seconds**. Pre-built templates included. |
+| **⚡ Real-Time Sync** | Votes appear **instantly** for everyone via Supabase Realtime. |
+| **📱 Responsive Design** | Beautifully crafted for **mobile, tablet, and desktop**. |
+| **🔒 Fairness First** | **One vote per device** checks + **anti-spam cooldowns**. |
+| **🎨 Modern UI** | Glassmorphism, smooth animations, and **interactive visuals**. |
+| **🔗 Easy Sharing** | One-click copy, **QR code generation**, and print support. |
 
 ---
 
-## ✨ Features
+## 🚀 Getting Started
 
-### Poll creation
-
-- **Instant creation** — Create a poll in under 10 seconds with a question and 2–10 options
-- **Optional description** — Add context or instructions for voters
-- **Poll templates** — Start from 6 pre-built templates: Yes/No, 1–5 Scale, Simple Choice, Feedback, Meeting Time, Topic Vote
-- **Live preview** — See your poll as you build it
-- **Validation** — Character limits (question: 200, description: 300, options: 100 each), duplicate option detection
-
-### Voting & results
-
-- **Real-time updates** — Votes appear live for all viewers via Supabase Realtime and a 5-second polling fallback
-- **One vote per device** — Voter tokens in `localStorage` prevent duplicate voting from the same browser
-- **Change your vote** — Switch your choice before the poll closes
-- **Animated results** — Progress bars and percentages update smoothly when votes change
-- **Optimistic UI** — Instant feedback when you vote, no waiting for the server
-
-### Sharing & export
-
-- **Copy link** — One-click copy poll URL to clipboard
-- **QR code** — Generate a scannable QR code for in-person voting
-- **Export CSV** — Download results as a spreadsheet
-- **Print** — Print-friendly layout for physical distribution
-
-### Discovery
-
-- **Browse polls** — Search and sort community polls (most recent or most votes)
-- **Quick create from template** — On the Browse page, click a template to jump straight to Create with it pre-filled
-- **Recent polls** — Home page shows the 6 most recent community polls
-
-### UX & design
-
-- **Confetti** — Celebration when you submit your first vote
-- **Toast notifications** — Feedback for actions (vote submitted, link copied, errors)
-- **Live badge** — Pulsing green indicator for real-time connection
-- **Loading states** — Skeleton loaders and spinners across the app
-- **Smooth animations** — Entrance animations, transitions, and micro-interactions
-- **Responsive** — Works on mobile, tablet, and desktop with safe-area support
-- **Error handling** — “Poll not found” and 404 pages with helpful navigation
-
----
-
-## 🎨 Design
-
-- **Light theme** — Warm off-white background with orange accents
-- **Typography** — DM Sans
-- **Animations** — Staggered fade-in, scale-in, skeleton pulse, smooth transitions
-
----
-
-## 🛠️ Tech stack
-
-| Layer | Technology |
-|-------|------------|
-| **Framework** | [Next.js 16](https://nextjs.org/) (App Router, React 19) |
-| **Language** | TypeScript |
-| **Styling** | Tailwind CSS 4 + Custom CSS animations |
-| **Backend / DB** | [Supabase](https://supabase.com/) (PostgreSQL + Realtime) |
-| **Icons** | [Lucide React](https://lucide.dev/) |
-| **QR codes** | [qrcode.react](https://github.com/zpao/qrcode.react) |
-| **Deployment** | [Vercel](https://vercel.com/) |
-
----
-
-## 🔑 Concepts & implementation
-
-- **Real-time sync** — Supabase Realtime subscriptions + payload-based state updates (no full refetch on each vote)
-- **Optimistic updates** — Local state updates immediately; Realtime keeps everyone in sync
-- **Row Level Security (RLS)** — Database-level access control on all tables
-- **Anonymous voting** — Voter tokens in `localStorage`; no sign-up required
-- **Input sanitization** — Trimming and length limits before DB insert
-- **OpenGraph** — Dynamic OG images for poll pages when shared
-
----
-
-## 📁 Project structure
-
-```
-ItsMyScreen/
-├── app/
-│   ├── components/
-│   │   ├── Confetti.tsx        # Vote celebration
-│   │   ├── Footer.tsx          # Branded footer
-│   │   └── Navbar.tsx          # Minimal navbar (logo only)
-│   ├── create/
-│   │   └── page.tsx            # Poll creation form + live preview + templates
-│   ├── poll/
-│   │   └── [id]/
-│   │       ├── layout.tsx
-│   │       ├── loading.tsx     # Skeleton loading state
-│   │       ├── opengraph-image.tsx  # Dynamic OG image
-│   │       └── page.tsx        # Poll view, voting, results, share, QR, CSV, print
-│   ├── polls/
-│   │   └── page.tsx            # Browse polls + search + sort + quick-create templates
-│   ├── globals.css             # Theme, components, keyframes, animations
-│   ├── layout.tsx              # Root layout, viewport, SEO
-│   ├── page.tsx                # Home: hero, features, how it works, recent polls
-│   ├── not-found.tsx           # 404 page
-│   └── error.tsx
-├── utils/
-│   ├── pollTemplates.ts        # Template definitions + getTemplateById
-│   ├── sanitize.ts             # sanitizeText
-│   ├── supabase.ts             # Supabase client
-│   └── timeAgo.ts              # Relative time strings
-├── supabase/
-│   ├── schema.sql              # Full schema
-│   └── migrations/             # Incremental migrations
-├── scripts/
-│   └── apply-schema.js         # Apply schema to Supabase
-└── .env.local                  # Env vars (not committed)
-```
-
----
-
-## 🚀 Getting started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) 18+
-- [Supabase](https://supabase.com/) account (free tier)
-
-### 1. Clone
-
+### 1. Clone & Install
 ```bash
 git clone https://github.com/SriramDivi1/ItsMyScreen.git
 cd ItsMyScreen
-```
-
-### 2. Install
-
-```bash
 npm install
 ```
 
-### 3. Set up Supabase
+### 2. Configure Supabase
+1. Create a free project at [supabase.com](https://supabase.com/).
+2. Get your **Project URL** and **Anon Key**.
+3. Apply the database schema:
+   - **Video Guide:** Run `npm run db:sql`, copy output, run in Supabase SQL Editor.
+   - **CLI:** `SUPABASE_PROJECT_REF=your_ref SUPABASE_DB_PASSWORD=your_pass npm run db:apply`.
 
-1. Create a project at [supabase.com](https://supabase.com/)
-2. Apply the schema:
-   - **Option A (SQL Editor):** Run `npm run db:sql`, paste the output into **Supabase → SQL Editor**, and run it.
-   - **Option B (Script):** Run `SUPABASE_PROJECT_REF=xxx SUPABASE_DB_PASSWORD=xxx npm run db:apply`. For pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_PROJECT_REF=xxx SUPABASE_DB_PASSWORD=xxx npm run db:apply`
-3. Copy your project URL and Anon Key from **Settings → API**
-
-### 4. Environment variables
-
-Create `.env.local` in the project root:
-
+### 3. Run Locally
+Create `.env.local`:
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+NEXT_PUBLIC_SUPABASE_URL=your_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### 5. Run
-
+Start the engines:
 ```bash
 npm run dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000).
-
----
-
-## 🗄️ Database
-
-### Tables
-
-| Table   | Purpose                                                  |
-|---------|----------------------------------------------------------|
-| `polls` | Questions, optional descriptions, timestamps, `created_by` |
-| `options` | Poll options with `vote_count`, linked to `polls`      |
-| `votes` | Individual votes with `voter_token`, unique per poll per token |
-
-### RPC functions
-
-- **`vote(p_poll_id, p_option_id, p_voter_token)`** — Insert a vote and increment the option’s `vote_count` (validates option belongs to poll)
-- **`change_vote(p_poll_id, p_old_option_id, p_new_option_id, p_voter_token)`** — Remove old vote, add new vote, update both option counts
-
-### Realtime
-
-`polls`, `options`, and `votes` are in the `supabase_realtime` publication so clients receive live updates.
+Visit `http://localhost:3000` to see it in action! 🚀
 
 ---
 
-## 🛡️ Fairness (anti-abuse)
+## 🛠️ Tech Stack & Architecture
 
-### Voter token
+Inside the engine room of ItsMyScreen:
 
-- Each browser gets a UUID in `localStorage`. The DB enforces `unique(poll_id, voter_token)`.
-- **Limitation:** Clearing storage or using another device/browser allows another vote. This is acceptable for a no-sign-up product.
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router, Server Components)
+- **Styling:** [Tailwind CSS 4](https://tailwindcss.com/) + Custom Animations
+- **Database:** [Supabase](https://supabase.com/) (PostgreSQL + RLS Security)
+- **Real-Time:** Supabase Realtime Channels
+- **Icons:** [Lucide React](https://lucide.dev/)
 
-### Vote cooldown
-
-- 2-second cooldown between vote attempts, including vote changes.
-- Reduces double-clicks and rapid automated voting.
-
-### RPC validation
-
-- `vote` and `change_vote` verify that the chosen option belongs to the poll before updating.
-
----
-
-## 📄 Routes
-
-| Route         | Description                                                                 |
-|---------------|-----------------------------------------------------------------------------|
-| `/`           | Home — hero, features, how it works, 6 most recent polls                    |
-| `/create`     | Create poll — templates, form, live preview; supports `?template=id`        |
-| `/polls`      | Browse — search, sort, quick-create templates, poll grid                    |
-| `/poll/[id]`  | Poll — vote, results, share, QR, CSV, print                                 |
-
----
-
-## 🌐 Deployment (Vercel)
-
-1. Push the repo to GitHub
-2. Import it in [vercel.com](https://vercel.com/)
-3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Deploy
-
-```bash
-npm run build   # Test production build
+### � Project Structure
+```
+ItsMyScreen/
+├── 📂 app/              # Next.js App Router
+│   ├── 📂 create/       # Poll creation wizard
+│   ├── 📂 poll/[id]/    # Dynamic poll voting page
+│   ├── 📂 polls/        # Community poll feed
+│   └── 📄 global.css    # Tailwind & Animation definitions
+├── 📂 utils/            # Helper functions (Sanitization, TimeAgo)
+└── 📂 supabase/         # Database schema & migrations
 ```
 
-**Live app:** [itsmyscreen-by-sriram.vercel.app](https://itsmyscreen-by-sriram.vercel.app)
+---
+
+<details>
+<summary><h2>📋 Technical submission details (Click to expand)</h2></summary>
+
+### Assignment Compliance Checklist
+- [x] **Poll Creation:** Create polls with 2-10 options.
+- [x] **Join by Link:** Public `/poll/[id]` sharable links.
+- [x] **Real-Time Results:** Live updates using Supabase subscriptions.
+- [x] **Fairness:** Voter tokens (localStorage) + rate-limiting cooldowns.
+- [x] **Persistence:** PostgreSQL storage with RLS policies.
+- [x] **Deployment:** Hosted on Vercel.
+
+### Fairness Mechanisms
+1.  **Voter Token:** Unique UUID stored in `localStorage`. The DB prevents duplicate votes for the same poll/token pair.
+2.  **Cooldowns:** 2-second block between actions to prevent bot spamming.
+3.  **RPC Validation:** Server-side checks ensure votes only count for valid options.
+
+### Edge Case Handling
+- **404 Handling:** Custom "Poll Not Found" UI.
+- **Offline Support:** UI functions optimistically.
+- **Data Integrity:** Input sanitization and max-length enforcement.
+
+</details>
+
+---
+
+## 💡 Key Concepts & Skills Implemented
+
+This project demonstrates proficiency in modern full-stack development, including:
+
+- **Real-time Data Synchronization**: Leveraging Supabase Realtime subscriptions to push updates to clients instantly.
+- **Optimistic UI Updates**: Providing immediate feedback to users while background requests process, enhancing perceived performance.
+- **Database Row Level Security (RLS)**: Securing user data at the database layer to prevent unauthorized access.
+- **Responsive & Adaptive Design**: Building a complex UI that works seamlessly across all device sizes using Tailwind CSS.
+- **Anonymous Voting**: Voter tokens stored in `localStorage` for fair, one-vote-per-device without sign-up.
+- **Modern React Patterns**: Extensive use of React Suspense, Hooks (`useReducer`, `useOptimistic`), and Server Components.
 
 ---
 
 ## 🤝 Contributing
 
-1. Fork the repo
-2. Create a branch (`git checkout -b feature/amazing-feature`)
-3. Commit (`git commit -m 'Add amazing feature'`)
-4. Push (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Got a better idea? We'd love to see it!
+1. Fork the repo 🍴
+2. Create your feature branch (`git checkout -b feature/cool-new-thing`)
+3. Commit your changes (`git commit -m 'Add some coolness'`)
+4. Push to the branch (`git push origin feature/cool-new-thing`)
+5. Open a Pull Request 📩
 
 ---
 
-## 📝 License
+<div align="center">
 
-MIT License — see [LICENSE](LICENSE).
+**Built with ❤️ by Sriram**  
+*Next.js 16 · Supabase · Tailwind*
 
----
-
-Built with ❤️ By Sriram using Next.js & Supabase
+</div>
