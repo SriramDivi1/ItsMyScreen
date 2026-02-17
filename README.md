@@ -163,7 +163,7 @@ ItsMyScreen/
 │   └── error.tsx
 ├── utils/
 │   ├── pollTemplates.ts        # Template definitions + getTemplateById
-│   ├── sanitize.ts             # escapeHtml, sanitizeText
+│   ├── sanitize.ts             # sanitizeText
 │   ├── supabase.ts             # Supabase client
 │   └── timeAgo.ts              # Relative time strings
 ├── supabase/
@@ -201,7 +201,7 @@ npm install
 1. Create a project at [supabase.com](https://supabase.com/)
 2. Apply the schema:
    - **Option A (SQL Editor):** Run `npm run db:sql`, paste the output into **Supabase → SQL Editor**, and run it.
-   - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password npm run db:apply`. For connection pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_DB_PASSWORD=... npm run db:apply`
+   - **Option B (Script):** Run `SUPABASE_PROJECT_REF=xxx SUPABASE_DB_PASSWORD=xxx npm run db:apply`. For pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_PROJECT_REF=xxx SUPABASE_DB_PASSWORD=xxx npm run db:apply`
 3. Copy your project URL and Anon Key from **Settings → API**
 
 ### 4. Environment variables

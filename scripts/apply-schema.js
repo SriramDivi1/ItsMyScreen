@@ -30,7 +30,7 @@ try {
 // 2. Pooler (recommended - more reliable than direct):
 //    SUPABASE_DB_USE_POOLER=1
 //    SUPABASE_DB_PASSWORD=your_password
-//    SUPABASE_PROJECT_REF=wvxfiltkomnejscbzalo  (from project URL)
+//    SUPABASE_PROJECT_REF=your_project_ref  (from project URL)
 //    SUPABASE_DB_REGION=us-east-1  (optional)
 //
 // 3. Direct connection:
@@ -50,7 +50,11 @@ function getConnectionConfig() {
     }
 
     const encodedPassword = encodeURIComponent(password);
-    const projectRef = process.env.SUPABASE_PROJECT_REF || 'wvxfiltkomnejscbzalo';
+    const projectRef = process.env.SUPABASE_PROJECT_REF;
+    if (!projectRef) {
+        console.error('Set SUPABASE_PROJECT_REF (from your Supabase project URL).');
+        process.exit(1);
+    }
     const region = process.env.SUPABASE_DB_REGION || 'us-east-1';
 
     if (process.env.SUPABASE_DB_USE_POOLER) {
