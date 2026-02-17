@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap, Plus } from 'lucide-react';
+import { Zap, Plus, Compass } from 'lucide-react';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -22,10 +22,16 @@ export default function Navbar() {
                     </Link>
 
                     {!isCreatePage && (
-                        <Link href="/create" className="btn-gradient text-sm !py-2.5 !px-5 !rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12]">
-                            <Plus className="w-4 h-4" />
-                            <span>Create Poll</span>
-                        </Link>
+                        <div className="flex items-center gap-2">
+                            <Link href="/polls" className="btn-secondary text-sm !py-2.5 !px-4 !rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12]">
+                                <Compass className="w-4 h-4" />
+                                <span>Browse</span>
+                            </Link>
+                            <Link href="/create" className="btn-gradient text-sm !py-2.5 !px-5 !rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12]">
+                                <Plus className="w-4 h-4" />
+                                <span>Create Poll</span>
+                            </Link>
+                        </div>
                     )}
                 </div>
             </div>

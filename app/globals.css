@@ -474,3 +474,25 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.15);
 }
+
+/* ─── Print ───────────────────────────────────────────────────── */
+
+@media print {
+  nav,
+  footer,
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #6d28d9, #0891b2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}

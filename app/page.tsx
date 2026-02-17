@@ -14,15 +14,18 @@ type RecentPoll = {
 
 export default function Home() {
   const [recentPolls, setRecentPolls] = useState<RecentPoll[]>([]);
+  const [loadingPolls, setLoadingPolls] = useState(true);
   const [now, setNow] = useState(() => Date.now());
 
   const fetchRecentPolls = async () => {
+    setLoadingPolls(true);
     const { data } = await supabase
       .from('polls')
       .select('id, question, created_at, options(vote_count)')
       .order('created_at', { ascending: false })
       .limit(6);
     if (data) setRecentPolls(data);
+    setLoadingPolls(false);
   };
 
   useEffect(() => {
@@ -82,6 +85,9 @@ export default function Home() {
             <span>Create a Poll</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
+          <Link href="/polls" className="btn-secondary text-base !border-white/15 hover:!border-violet-400/50">
+            Browse Polls
+          </Link>
           <a
             href="https://github.com/SriramDivi1/ItsMyScreen"
             target="_blank"
@@ -139,13 +145,41 @@ export default function Home() {
       </section>
 
       {/* Recent Polls */}
-      {recentPolls.length > 0 && (
-        <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-24">
-          <div className="text-center mb-10">
-            <h2 className="animate-fade-in-up text-3xl sm:text-4xl font-bold mb-3">Recent Polls</h2>
-            <p className="animate-fade-in-up stagger-1 text-[var(--color-text-secondary)]">Join the conversation — vote on community polls</p>
-          </div>
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pb-24">
+        <div className="text-center mb-10">
+          <h2 className="animate-fade-in-up text-3xl sm:text-4xl font-bold mb-3">Recent Polls</h2>
+          <p className="animate-fade-in-up stagger-1 text-[var(--color-text-secondary)] mb-4">Join the conversation — vote on community polls</p>
+          <Link href="/polls" className="text-sm text-violet-400 hover:text-violet-300 transition-colors">
+            Browse all polls →
+          </Link>
+        </div>
 
+        {loadingPolls ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="glass-card p-5 h-full animate-pulse">
+                <div className="h-4 bg-white/10 rounded mb-3 w-full" />
+                <div className="h-4 bg-white/10 rounded mb-4 w-3/4" />
+                <div className="flex justify-between">
+                  <div className="h-3 bg-white/10 rounded w-16" />
+                  <div className="h-3 bg-white/10 rounded w-14" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : recentPolls.length === 0 ? (
+          <div className="text-center py-16 glass-card max-w-md mx-auto">
+            <div className="w-14 h-14 rounded-2xl bg-violet-500/10 flex items-center justify-center mx-auto mb-4">
+              <Users className="w-7 h-7 text-violet-400" />
+            </div>
+            <h3 className="text-lg font-semibold text-white mb-2">No polls yet</h3>
+            <p className="text-sm text-[var(--color-text-secondary)] mb-6">Be the first to create a poll and get instant feedback.</p>
+            <Link href="/create" className="btn-gradient inline-flex items-center gap-2 !py-3 !px-6">
+              <span>Create Poll</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {recentPolls.map((poll, i) => (
               <Link key={poll.id} href={`/poll/${poll.id}`}>
@@ -167,8 +201,8 @@ export default function Home() {
               </Link>
             ))}
           </div>
-        </section>
-      )}
+        )}
+      </section>
     </div>
   );
 }
