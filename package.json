@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:apply": "node scripts/apply-schema.js",
+    "db:sql": "node scripts/apply-schema.js --print-sql"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.95.3",

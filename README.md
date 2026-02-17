@@ -97,8 +97,8 @@ npm install
 
 1. Create a new project at [supabase.com](https://supabase.com/)
 2. Apply the database schema:
-   - **Option A (SQL Editor):** Go to **SQL Editor** and run the contents of `supabase/schema.sql`
-   - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password node scripts/apply-schema.js` (set `SUPABASE_DB_HOST` if different)
+   - **Option A (SQL Editor, recommended):** Run `npm run db:sql` to print the SQL, then paste it into **Supabase → SQL Editor** and run.
+   - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password npm run db:apply`. For pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_DB_PASSWORD=... npm run db:apply`
 3. Copy your project URL and Anon Key from **Settings → API**
 
 ### 4. Configure Environment Variables
