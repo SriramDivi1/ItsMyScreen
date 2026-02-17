@@ -1,28 +1,35 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
 import { sanitizeText } from '../../utils/sanitize';
 import { PenLine, Plus, Trash2, Loader2, Eye } from 'lucide-react';
+import { POLL_TEMPLATES, getTemplateById } from '../../utils/pollTemplates';
 
 const MAX_QUESTION_LENGTH = 200;
 const MAX_OPTION_LENGTH = 100;
 const MAX_DESCRIPTION_LENGTH = 300;
 
-const POLL_TEMPLATES = [
-  { label: 'Yes / No', question: 'Do you agree?', options: ['Yes', 'No'] },
-  { label: '1–5 Scale', question: 'How would you rate this?', options: ['1', '2', '3', '4', '5'] },
-  { label: 'Simple Choice', question: 'Which do you prefer?', options: ['Option A', 'Option B', 'Option C'] },
-  { label: 'Feedback', question: 'How can we improve?', options: ['More features', 'Better UX', 'Faster performance', 'Other'] },
-];
-
 export default function CreatePoll() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [question, setQuestion] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const templateId = searchParams.get('template');
+    if (templateId) {
+      const t = getTemplateById(templateId);
+      if (t) {
+        setQuestion(t.question);
+        setOptions([...t.options, '']);
+        setDescription(t.description ?? '');
+      }
+    }
+  }, [searchParams]);
   const [duplicateError, setDuplicateError] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
@@ -94,7 +101,7 @@ export default function CreatePoll() {
               <div className="flex flex-wrap gap-2">
                 {POLL_TEMPLATES.map((t) => (
                   <button
-                    key={t.label}
+                    key={t.id}
                     type="button"
                     onClick={() => {
                       setQuestion(t.question);

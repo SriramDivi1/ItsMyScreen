@@ -4,7 +4,8 @@ import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
 import { supabase } from '../../utils/supabase';
 import { timeAgo } from '../../utils/timeAgo';
-import { ArrowRight, Search, Users, Clock, BarChart3 } from 'lucide-react';
+import { POLL_TEMPLATES } from '../../utils/pollTemplates';
+import { ArrowRight, Search, Users, Clock, BarChart3, FileText } from 'lucide-react';
 
 type Poll = {
   id: string;
@@ -74,6 +75,24 @@ export default function BrowsePolls() {
           <p className="text-[var(--color-text-secondary)]">
             Discover and vote on community polls
           </p>
+        </div>
+
+        <div className="mb-8 animate-fade-in-up stagger-1">
+          <div className="flex items-center gap-2 mb-3">
+            <FileText className="w-4 h-4 text-[var(--color-accent)]" />
+            <h2 className="text-sm font-semibold text-[var(--color-text-primary)]">Quick create from template</h2>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {POLL_TEMPLATES.map((t) => (
+              <Link
+                key={t.id}
+                href={`/create?template=${t.id}`}
+                className="inline-flex items-center gap-2 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-medium border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent-muted)]/30 transition-all duration-200 ease-out text-[var(--color-text-primary)] active:scale-95"
+              >
+                {t.label}
+              </Link>
+            ))}
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
