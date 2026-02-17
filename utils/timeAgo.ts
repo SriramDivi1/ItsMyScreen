@@ -3,7 +3,9 @@
  * Uses `now` to allow for consistent rendering (pass Date.now() from state that updates periodically).
  */
 export function timeAgo(dateStr: string, now: number = Date.now()): string {
-  const diff = now - new Date(dateStr).getTime();
+  const ts = new Date(dateStr).getTime();
+  if (Number.isNaN(ts)) return '';
+  const diff = now - ts;
   const m = Math.floor(diff / 60000);
   if (m < 1) return 'just now';
   if (m < 60) return `${m}m ago`;

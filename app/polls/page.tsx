@@ -24,15 +24,11 @@ export default function BrowsePolls() {
 
   const fetchPolls = useCallback(async () => {
     setLoading(true);
-    const query = supabase.from('polls').select('id, question, created_at, options(vote_count)');
-
+    let query = supabase.from('polls').select('id, question, created_at, options(vote_count)');
     if (searchDebounced.trim()) {
-      query.ilike('question', `%${searchDebounced.trim()}%`);
+      query = query.ilike('question', `%${searchDebounced.trim()}%`);
     }
-
-    query.order('created_at', { ascending: false });
-
-    const { data } = await query.limit(50);
+    const { data } = await query.order('created_at', { ascending: false }).limit(50);
     let results = data ?? [];
 
     if (sort === 'votes') {

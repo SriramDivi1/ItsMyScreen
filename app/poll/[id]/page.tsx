@@ -325,7 +325,9 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                     </div>
 
                     <div className="space-y-3 mb-6">
-                        {options.map((option) => {
+                        {options.length === 0 ? (
+                            <p className="text-sm text-[var(--color-text-secondary)] py-4">This poll has no options.</p>
+                        ) : options.map((option) => {
                             const percent = totalVotes > 0 ? Math.round((option.vote_count / totalVotes) * 100) : 0;
                             const isVoted = votedOptionId === option.id;
                             const isLeader = option.vote_count === maxVotes && option.vote_count > 0;
@@ -394,7 +396,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                         })}
                     </div>
 
-                    {votedOptionId && (
+                    {votedOptionId && options.some((o) => o.id === votedOptionId) && (
                         <div className="text-sm text-[var(--color-accent)] flex items-center gap-2 mb-6">
                             <Check className="w-4 h-4" />
                             You voted for &ldquo;
