@@ -72,13 +72,13 @@ export default function Home() {
           </p>
 
           <div className="animate-fade-in-up stagger-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link href="/create" className="btn-primary text-base w-full sm:w-auto">
+            <Link href="/create" className="btn-primary text-[1rem] w-full sm:w-auto">
               <span>Create a poll</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/polls"
-              className="btn-secondary text-base w-full sm:w-auto"
+              className="btn-secondary text-[1rem] w-full sm:w-auto"
             >
               Browse polls
             </Link>
@@ -86,7 +86,7 @@ export default function Home() {
               href="https://github.com/SriramDivi1/ItsMyScreen"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-secondary text-base w-full sm:w-auto"
+              className="btn-secondary text-[1rem] w-full sm:w-auto"
               aria-label="View on GitHub"
             >
               View on GitHub
