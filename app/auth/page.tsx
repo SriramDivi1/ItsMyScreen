@@ -4,26 +4,41 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
 import Link from 'next/link';
-import { Mail, ArrowLeft, Loader2 } from 'lucide-react';
+import { Mail, ArrowLeft, Loader2, User } from 'lucide-react';
+
+type Mode = 'signin' | 'signup';
+type Step = 'form' | 'otp';
 
 export default function AuthPage() {
   const router = useRouter();
+  const [mode, setMode] = useState<Mode>('signin');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState<'email' | 'otp'>('email');
+  const [step, setStep] = useState<Step>('form');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const resetForm = () => {
+    setStep('form');
+    setOtp('');
+    setError(null);
+  };
 
   const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
+    if (mode === 'signup' && (!firstName.trim() || !lastName.trim())) return;
+
     setLoading(true);
     setError(null);
     const { error: err } = await supabase.auth.signInWithOtp({
       email: email.trim(),
-      options: { shouldCreateUser: true },
+      options: { shouldCreateUser: mode === 'signup' },
     });
     setLoading(false);
+
     if (err) {
       setError(err.message);
       return;
@@ -34,6 +49,7 @@ export default function AuthPage() {
   const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!otp.trim()) return;
+
     setLoading(true);
     setError(null);
     const { data, error: err } = await supabase.auth.verifyOtp({
@@ -42,24 +58,51 @@ export default function AuthPage() {
       type: 'email',
     });
     setLoading(false);
+
     if (err) {
       setError(err.message);
       return;
     }
-    if (data.user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id')
-        .eq('id', data.user.id)
-        .single();
-      if (profile) {
-        router.push('/');
-        router.refresh();
-      } else {
-        router.push('/auth/complete');
-        router.refresh();
+
+    if (!data.user) return;
+
+    if (mode === 'signup') {
+      const { error: insertErr } = await supabase.from('profiles').insert({
+        id: data.user.id,
+        first_name: firstName.trim().slice(0, 50),
+        last_name: lastName.trim().slice(0, 50),
+      });
+      if (insertErr) {
+        setError(insertErr.message);
+        return;
       }
+      router.push('/');
+      router.refresh();
+      return;
     }
+
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profile) {
+      router.push('/');
+      router.refresh();
+    } else {
+      router.push('/auth/complete');
+      router.refresh();
+    }
+  };
+
+  const switchMode = (m: Mode) => {
+    setMode(m);
+    resetForm();
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setOtp('');
   };
 
   return (
@@ -74,91 +117,162 @@ export default function AuthPage() {
         </Link>
 
         <div className="card p-8">
-          <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">
-            Sign in
-          </h1>
-          <p className="text-sm text-[var(--color-text-secondary)] mb-6">
-            Enter your email to receive a one-time code.
-          </p>
+          <div className="flex rounded-lg bg-[var(--color-base)] p-1 mb-6">
+            <button
+              type="button"
+              onClick={() => switchMode('signin')}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+                mode === 'signin'
+                  ? 'bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-sm'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+              }`}
+            >
+              Sign in
+            </button>
+            <button
+              type="button"
+              onClick={() => switchMode('signup')}
+              className={`flex-1 py-2 text-sm font-medium rounded-md transition-colors ${
+                mode === 'signup'
+                  ? 'bg-[var(--color-surface)] text-[var(--color-text-primary)] shadow-sm'
+                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)]'
+              }`}
+            >
+              Sign up
+            </button>
+          </div>
 
-          {step === 'email' ? (
-            <form onSubmit={handleRequestOtp} className="space-y-4">
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                Email
-              </label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                  className="input-field pl-12"
-                  required
-                  autoComplete="email"
-                />
-              </div>
-              {error && (
-                <p className="text-sm text-[var(--color-error)]">{error}</p>
-              )}
-              <button
-                type="submit"
-                disabled={loading}
-                className="btn-primary w-full"
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  'Send code'
+          {step === 'form' ? (
+            <>
+              <h1 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+                {mode === 'signin' ? 'Welcome back' : 'Create an account'}
+              </h1>
+              <p className="text-sm text-[var(--color-text-secondary)] mb-6">
+                {mode === 'signin'
+                  ? 'Enter your email to receive a one-time code.'
+                  : 'Enter your name and email to get started.'}
+              </p>
+
+              <form onSubmit={handleRequestOtp} className="space-y-4">
+                {mode === 'signup' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                        First name
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" />
+                        <input
+                          type="text"
+                          value={firstName}
+                          onChange={(e) => setFirstName(e.target.value.slice(0, 50))}
+                          placeholder="First name"
+                          className="input-field pl-12"
+                          required
+                          autoComplete="given-name"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                        Last name
+                      </label>
+                      <div className="relative">
+                        <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" />
+                        <input
+                          type="text"
+                          value={lastName}
+                          onChange={(e) => setLastName(e.target.value.slice(0, 50))}
+                          placeholder="Last name"
+                          className="input-field pl-12"
+                          required
+                          autoComplete="family-name"
+                        />
+                      </div>
+                    </div>
+                  </>
                 )}
-              </button>
-            </form>
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
+                    Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-muted)]" />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="you@example.com"
+                      className="input-field pl-12"
+                      required
+                      autoComplete="email"
+                    />
+                  </div>
+                </div>
+                {error && (
+                  <p className="text-sm text-[var(--color-error)]">{error}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="btn-primary w-full"
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    'Send code'
+                  )}
+                </button>
+              </form>
+            </>
           ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-4">
-              <p className="text-sm text-[var(--color-text-secondary)]">
+            <>
+              <h1 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">
+                Verify your email
+              </h1>
+              <p className="text-sm text-[var(--color-text-secondary)] mb-6">
                 We sent a 6-digit code to <strong>{email}</strong>
               </p>
-              <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
-                Verification code
-              </label>
-              <input
-                type="text"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={6}
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                placeholder="000000"
-                className="input-field text-center text-lg tracking-[0.5em] font-mono"
-                autoFocus
-                autoComplete="one-time-code"
-              />
-              {error && (
-                <p className="text-sm text-[var(--color-error)]">{error}</p>
-              )}
-              <button
-                type="submit"
-                disabled={loading || otp.length !== 6}
-                className="btn-primary w-full"
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  'Verify'
+
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <label className="block text-sm font-medium text-[var(--color-text-secondary)]">
+                  Verification code
+                </label>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  placeholder="000000"
+                  className="input-field text-center text-lg tracking-[0.5em] font-mono"
+                  autoFocus
+                  autoComplete="one-time-code"
+                />
+                {error && (
+                  <p className="text-sm text-[var(--color-error)]">{error}</p>
                 )}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setStep('email');
-                  setOtp('');
-                  setError(null);
-                }}
-                className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] w-full"
-              >
-                Use a different email
-              </button>
-            </form>
+                <button
+                  type="submit"
+                  disabled={loading || otp.length !== 6}
+                  className="btn-primary w-full"
+                >
+                  {loading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    `Verify & ${mode === 'signin' ? 'Sign in' : 'Sign up'}`
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] w-full"
+                >
+                  Use a different email
+                </button>
+              </form>
+            </>
           )}
         </div>
       </div>
