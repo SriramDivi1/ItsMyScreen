@@ -99,6 +99,22 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
     }, [id, getVoterToken]);
 
 
+    const applyOptionsChange = useCallback(
+        (payload: { eventType: string; new?: Record<string, unknown>; old?: Record<string, unknown> }) => {
+            if (payload.eventType === 'UPDATE' && payload.new) {
+                const row = payload.new as { id: string; text: string; vote_count: number };
+                setOptions((prev) =>
+                    prev.some((o) => o.id === row.id)
+                        ? prev.map((o) => (o.id === row.id ? { ...o, ...row, vote_count: Number(row.vote_count) } : o))
+                        : [...prev, { id: row.id, text: row.text, vote_count: Number(row.vote_count) }].sort((a, b) => a.id.localeCompare(b.id))
+                );
+            } else if (payload.eventType === 'INSERT' || payload.eventType === 'DELETE') {
+                fetchPollData();
+            }
+        },
+        [fetchPollData]
+    );
+
     useEffect(() => {
         const t = setTimeout(() => fetchPollData(), 0);
         const channel = supabase
@@ -106,15 +122,18 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             .on(
                 'postgres_changes',
                 { event: '*', schema: 'public', table: 'options', filter: `poll_id=eq.${id}` },
-                () => fetchPollData()
+                applyOptionsChange
             )
             .subscribe();
 
+        const pollInterval = setInterval(() => fetchPollData(), 5000);
+
         return () => {
             clearTimeout(t);
+            clearInterval(pollInterval);
             supabase.removeChannel(channel);
         };
-    }, [id, fetchPollData]);
+    }, [id, fetchPollData, applyOptionsChange]);
 
     const handleVote = async (optionId: string) => {
         if (voting) return;
@@ -137,8 +156,16 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             if (!error) {
                 setVotedOptionId(optionId);
                 setLastVoteAt(Date.now());
+                setOptions((prev) =>
+                    prev.map((o) =>
+                        o.id === votedOptionId
+                            ? { ...o, vote_count: Math.max(0, o.vote_count - 1) }
+                            : o.id === optionId
+                              ? { ...o, vote_count: o.vote_count + 1 }
+                              : o
+                    )
+                );
                 showToast('Vote updated!');
-                fetchPollData();
             } else {
                 showToast('Could not change vote. Try again.');
             }
@@ -151,10 +178,12 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             if (!error) {
                 setVotedOptionId(optionId);
                 setLastVoteAt(Date.now());
+                setOptions((prev) =>
+                    prev.map((o) => (o.id === optionId ? { ...o, vote_count: o.vote_count + 1 } : o))
+                );
                 setShowConfetti(true);
                 showToast('Vote submitted!');
                 setTimeout(() => setShowConfetti(false), 2500);
-                fetchPollData();
             } else {
                 showToast('Could not submit vote. Try again.');
             }
