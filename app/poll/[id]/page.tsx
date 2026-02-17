@@ -224,7 +224,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
           <div className="flex items-center gap-2">
             <button
               onClick={() => fetchPollData()}
-              className="p-2 rounded-lg hover:bg-[var(--color-base)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
+              className="p-2 rounded-lg hover:bg-[var(--color-base)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
               title="Refresh"
               aria-label="Refresh poll"
             >
@@ -275,7 +275,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                       {!hasVoted ? (
                         <div
                           className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${
-                            voting ? 'border-[var(--color-border)]' : 'border-[var(--color-text-muted)]'
+                            voting ? 'border-[var(--color-border)]' : 'border-[var(--color-text-secondary)]'
                           }`}
                         />
                       ) : isVoted ? (
@@ -306,7 +306,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                         >
                           {percent}%
                         </span>
-                        <span className="text-[var(--color-text-muted)] text-xs">
+                        <span className="text-[var(--color-text-secondary)] text-xs">
                           ({option.vote_count})
                         </span>
                       </div>
@@ -341,7 +341,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
           <div className="h-px bg-[var(--color-border)] mb-6" />
 
           <div className="flex flex-wrap items-center justify-between gap-3 print:hidden">
-            <div className="flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+            <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
               <Users className="w-3.5 h-3.5" />
               {totalVotes} votes · Real-time
             </div>

@@ -216,7 +216,7 @@ export default function Home() {
                     <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4 group-hover:text-[var(--color-accent)] transition-colors">
                       {poll.question}
                     </h3>
-                    <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+                    <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
                       <span className="flex items-center gap-1.5">
                         <Users className="w-3 h-3" />
                         {totalVotes(poll)} {totalVotes(poll) === 1 ? 'vote' : 'votes'}

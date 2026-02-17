@@ -81,7 +81,7 @@ export default function BrowsePolls() {
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
           <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-secondary)]" />
             <input
               type="text"
               placeholder="Search polls..."
@@ -117,7 +117,7 @@ export default function BrowsePolls() {
           </div>
         ) : polls.length === 0 ? (
           <div className="card p-12 text-center">
-            <BarChart3 className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-4" />
+            <BarChart3 className="w-12 h-12 text-[var(--color-text-secondary)] mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
               No polls found
             </h3>
@@ -137,7 +137,7 @@ export default function BrowsePolls() {
                   <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4">
                     {poll.question}
                   </h3>
-                  <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">
+                  <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
                     <span className="flex items-center gap-1.5">
                       <Users className="w-3 h-3" />
                       {totalVotes(poll)} {totalVotes(poll) === 1 ? 'vote' : 'votes'}

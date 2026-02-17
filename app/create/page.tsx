@@ -186,7 +186,7 @@ export default function CreatePoll() {
                     {options.length > 2 && (
                       <button
                         onClick={() => setOptions(options.filter((_, j) => j !== i))}
-                        className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-muted)] rounded-lg transition-colors"
+                        className="p-2 text-[var(--color-text-secondary)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-muted)] rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -199,7 +199,7 @@ export default function CreatePoll() {
             {options.length < 10 && (
               <button
                 onClick={() => setOptions([...options, ''])}
-                className="w-full py-3 border border-dashed border-[var(--color-border)] rounded-xl text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)]/50 flex items-center justify-center gap-2 mb-6"
+                className="w-full py-3 border border-dashed border-[var(--color-border-hover)] rounded-xl text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] hover:border-[var(--color-accent)]/50 flex items-center justify-center gap-2 mb-6"
               >
                 <Plus className="w-4 h-4" />
                 Add option
@@ -260,7 +260,7 @@ export default function CreatePoll() {
                     )
                 )}
                 {validOptions.length === 0 && (
-                  <div className="py-8 text-center text-sm text-[var(--color-text-muted)]">
+                  <div className="py-8 text-center text-sm text-[var(--color-text-secondary)]">
                     Add options to see preview
                   </div>
                 )}
