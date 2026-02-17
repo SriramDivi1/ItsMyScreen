@@ -44,7 +44,7 @@ export default function Home() {
   return (
     <div className="min-h-screen text-white selection:bg-violet-500/30">
       {/* Floating Orbs */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" style={{ willChange: 'transform' }}>
         <div className="orb orb-violet w-[500px] h-[500px] -top-40 -left-40 animate-float-slow" />
         <div className="orb orb-cyan w-[400px] h-[400px] top-1/3 -right-32 animate-float" style={{ animationDelay: '3s' }} />
         <div className="orb orb-purple w-[350px] h-[350px] -bottom-20 left-1/3 animate-float-slow" style={{ animationDelay: '6s' }} />
@@ -79,7 +79,8 @@ export default function Home() {
             href="https://github.com/SriramDivi1/ItsMyScreen"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-secondary text-base"
+            className="btn-secondary text-base !border-white/15 hover:!border-violet-400/50"
+            aria-label="View source code on GitHub"
           >
             View on GitHub
           </a>
@@ -148,7 +149,7 @@ export default function Home() {
                   <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">
                     <span className="flex items-center gap-1.5">
                       <Users className="w-3 h-3" />
-                      {totalVotes(poll)} votes
+                      {totalVotes(poll)} {totalVotes(poll) === 1 ? 'vote' : 'votes'}
                     </span>
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3 h-3" />

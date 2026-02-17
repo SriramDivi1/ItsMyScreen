@@ -175,7 +175,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                         Back
                     </Link>
                     <div className="flex items-center gap-3">
-                        <button onClick={fetchPollData} className="p-2 rounded-xl hover:bg-white/5 text-[var(--color-text-muted)] hover:text-white transition-all" title="Refresh">
+                        <button onClick={fetchPollData} className="p-2 rounded-xl hover:bg-white/5 text-[var(--color-text-muted)] hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500" title="Refresh" aria-label="Refresh poll data">
                             <RefreshCw className="w-4 h-4" />
                         </button>
                         <Link href="/create" className="btn-secondary text-sm !py-2 !px-4">
@@ -210,7 +210,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                     key={option.id}
                                     onClick={() => handleVote(option.id)}
                                     disabled={!!votedOptionId || voting}
-                                    className={`w-full text-left rounded-xl p-4 transition-all duration-300 relative overflow-hidden group ${isVoted
+                                    className={`w-full text-left rounded-xl p-4 transition-all duration-300 relative overflow-hidden group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12] ${isVoted
                                         ? 'bg-violet-500/10 border border-violet-500/30'
                                         : 'bg-white/[0.03] border border-transparent hover:border-[var(--color-border-hover)] hover:bg-white/[0.05]'
                                         } ${!hasVoted && !voting ? 'cursor-pointer' : 'cursor-default'}`}
@@ -279,7 +279,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                         </div>
                         <button
                             onClick={copyLink}
-                            className="btn-secondary !py-2 !px-4 text-sm"
+                            className="btn-secondary !py-2 !px-4 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
                         >
                             {copied ? (
                                 <><Check className="w-3.5 h-3.5 text-emerald-400" /><span>Copied!</span></>

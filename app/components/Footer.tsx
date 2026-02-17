@@ -16,6 +16,7 @@ export default function Footer() {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1.5 hover:text-violet-400 transition-colors duration-300"
+                            aria-label="View source code on GitHub"
                         >
                             <Github className="w-3.5 h-3.5" />
                             <span>GitHub</span>
