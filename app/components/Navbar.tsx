@@ -2,13 +2,10 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { BarChart2, Plus, Compass, LogIn, LogOut, ChevronDown } from 'lucide-react';
+import { BarChart2, LogIn, LogOut, ChevronDown } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
-  const pathname = usePathname();
-  const isCreatePage = pathname === '/create';
   const { user, profile, loading, signOut } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -40,23 +37,7 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {!isCreatePage && (
-            <div className="flex items-center gap-2">
-              <Link
-                href="/polls"
-                className="btn-secondary text-sm !py-2 !px-4"
-              >
-                <Compass className="w-4 h-4" />
-                <span>Browse</span>
-              </Link>
-              <Link
-                href="/create"
-                className="btn-primary text-sm !py-2 !px-5"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Create poll</span>
-              </Link>
-
+          <div className="flex items-center gap-2">
               {!loading && (
                 user ? (
                   <div className="relative" ref={menuRef}>
@@ -90,15 +71,14 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href="/auth"
-                    className="btn-secondary text-sm !py-2 !px-4"
+                    className="btn-primary text-sm !py-2 !px-5"
                   >
                     <LogIn className="w-4 h-4" />
-                    <span>Sign in</span>
+                    <span>Sign in / Sign up</span>
                   </Link>
                 )
               )}
             </div>
-          )}
         </div>
       </div>
     </nav>
