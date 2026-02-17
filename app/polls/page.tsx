@@ -67,7 +67,7 @@ export default function BrowsePolls() {
   return (
     <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 animate-fade-in-up">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
             <span className="gradient-text">Browse polls</span>
           </h1>
@@ -102,18 +102,18 @@ export default function BrowsePolls() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="card p-6 animate-pulse">
-                <div className="h-4 bg-[var(--color-border)] rounded mb-3 w-full" />
-                <div className="h-4 bg-[var(--color-border)] rounded mb-6 w-3/4" />
+              <div key={i} className="card p-6 animate-fade-in-up transition-smooth" style={{ animationDelay: `${i * 40}ms` }}>
+                <div className="h-4 bg-[var(--color-border)] rounded-lg mb-3 w-full animate-skeleton-pulse" />
+                <div className="h-4 bg-[var(--color-border)] rounded-lg mb-6 w-3/4 animate-skeleton-pulse" />
                 <div className="flex justify-between">
-                  <div className="h-3 bg-[var(--color-border)] rounded w-16" />
-                  <div className="h-3 bg-[var(--color-border)] rounded w-14" />
+                  <div className="h-3 bg-[var(--color-border)] rounded w-16 animate-skeleton-pulse" />
+                  <div className="h-3 bg-[var(--color-border)] rounded w-14 animate-skeleton-pulse" />
                 </div>
               </div>
             ))}
           </div>
         ) : polls.length === 0 ? (
-          <div className="card p-12 text-center">
+          <div className="card p-12 text-center animate-fade-in-up">
             <BarChart3 className="w-12 h-12 text-[var(--color-text-secondary)] mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
               No polls found
@@ -130,7 +130,7 @@ export default function BrowsePolls() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {polls.map((poll) => (
               <Link key={poll.id} href={`/poll/${poll.id}`} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 rounded-xl">
-                <div className="card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer">
+                <div className="card p-6 h-full hover:border-[var(--color-accent)]/30 hover:shadow-md transition-smooth cursor-pointer">
                   <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4">
                     {poll.question}
                   </h3>

@@ -240,8 +240,11 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)] rounded-full animate-spin" />
+            <div className="min-h-screen flex items-center justify-center animate-fade-in">
+                <div className="flex flex-col items-center gap-4">
+                    <div className="w-10 h-10 border-2 border-[var(--color-accent)]/20 border-t-[var(--color-accent)] rounded-full animate-spin" style={{ animationDuration: '0.8s' }} />
+                    <p className="text-sm text-[var(--color-text-secondary)]">Loading poll...</p>
+                </div>
             </div>
         );
     }
@@ -302,7 +305,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                     </div>
                 </div>
 
-                <div className="gradient-border-card p-4 sm:p-6 md:p-8">
+                <div className="gradient-border-card p-4 sm:p-6 md:p-8 animate-scale-in">
                     <div className="mb-6">
                         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] mb-3 print:text-black">
                             {poll.question}
@@ -330,7 +333,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                     key={option.id}
                                     onClick={() => handleVote(option.id)}
                                     disabled={voting}
-                                    className={`w-full text-left rounded-xl p-4 min-h-[48px] sm:min-h-0 transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${isVoted
+                                    className={`w-full text-left rounded-xl p-4 min-h-[48px] sm:min-h-0 transition-all duration-300 ease-out border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 active:scale-[0.99] ${isVoted
                                             ? 'bg-[var(--color-accent-muted)]/30 border-[var(--color-accent)]/40'
                                             : 'bg-[var(--color-base)] border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent-muted)]/10'
                                         }`}
@@ -377,7 +380,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                     {hasVoted && (
                                         <div className="mt-3 gradient-bar-track">
                                             <div
-                                                className={`h-full rounded-full transition-all duration-500 ease-out animate-bar-fill ${isLeader ? 'bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]' : 'bg-[var(--color-accent)]/40'
+                                                className={`h-full rounded-full transition-[width] duration-500 ease-out ${isLeader ? 'bg-gradient-to-r from-[var(--color-accent)] to-[var(--color-accent-light)]' : 'bg-[var(--color-accent)]/40'
                                                     }`}
                                                 style={{ width: `${percent}%` }}
                                             />

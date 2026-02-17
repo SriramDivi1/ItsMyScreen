@@ -171,18 +171,18 @@ export default function Home() {
           {loadingPolls ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="card p-6 animate-pulse">
-                  <div className="h-4 bg-[var(--color-border)] rounded mb-3 w-full" />
-                  <div className="h-4 bg-[var(--color-border)] rounded mb-6 w-3/4" />
+                <div key={i} className="card p-6 animate-fade-in-up" style={{ animationDelay: `${i * 50}ms` }}>
+                  <div className="h-4 bg-[var(--color-border)] rounded-lg mb-3 w-full animate-skeleton-pulse" />
+                  <div className="h-4 bg-[var(--color-border)] rounded-lg mb-6 w-3/4 animate-skeleton-pulse" />
                   <div className="flex justify-between">
-                    <div className="h-3 bg-[var(--color-border)] rounded w-16" />
-                    <div className="h-3 bg-[var(--color-border)] rounded w-14" />
+                    <div className="h-3 bg-[var(--color-border)] rounded w-16 animate-skeleton-pulse" />
+                    <div className="h-3 bg-[var(--color-border)] rounded w-14 animate-skeleton-pulse" />
                   </div>
                 </div>
               ))}
             </div>
           ) : recentPolls.length === 0 ? (
-            <div className="card p-12 text-center max-w-md mx-auto">
+            <div className="card p-12 text-center max-w-md mx-auto animate-fade-in-up">
               <div className="w-16 h-16 rounded-2xl bg-[var(--color-accent-muted)]/50 flex items-center justify-center mx-auto mb-4">
                 <Users className="w-8 h-8 text-[var(--color-accent)]" />
               </div>
@@ -202,9 +202,9 @@ export default function Home() {
               {recentPolls.map((poll, i) => (
                 <Link key={poll.id} href={`/poll/${poll.id}`} className="group block">
                   <div
-                    className={`animate-fade-in-up stagger-${Math.min(i + 1, 6)} card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer group-hover:border-[var(--color-accent)]/30`}
+                    className={`animate-fade-in-up stagger-${Math.min(i + 1, 6)} card p-6 h-full hover:border-[var(--color-accent)]/30 hover:shadow-md transition-smooth cursor-pointer group-hover:border-[var(--color-accent)]/30`}
                   >
-                    <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4 group-hover:text-[var(--color-accent)] transition-colors">
+                    <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4 group-hover:text-[var(--color-accent)] transition-colors duration-300">
                       {poll.question}
                     </h3>
                     <div className="flex items-center justify-between text-xs text-[var(--color-text-secondary)]">
