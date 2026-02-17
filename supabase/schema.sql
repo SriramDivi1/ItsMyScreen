@@ -39,10 +39,17 @@ begin
 exception when duplicate_object then null;
 end $$;
 
--- RPC for atomic voting
+-- RPC for atomic voting (validates option belongs to poll)
 create or replace function vote(p_poll_id uuid, p_option_id uuid, p_voter_token text)
 returns void as $$
 begin
+  if not exists (
+    select 1 from public.options
+    where id = p_option_id and poll_id = p_poll_id
+  ) then
+    raise exception 'option does not belong to poll';
+  end if;
+
   insert into public.votes (poll_id, option_id, voter_token)
   values (p_poll_id, p_option_id, p_voter_token);
 
@@ -52,10 +59,20 @@ begin
 end;
 $$ language plpgsql;
 
--- RPC to change vote
+-- RPC to change vote (validates options belong to poll)
 create or replace function change_vote(p_poll_id uuid, p_old_option_id uuid, p_new_option_id uuid, p_voter_token text)
 returns void as $$
 begin
+  if not exists (
+    select 1 from public.options
+    where id = p_old_option_id and poll_id = p_poll_id
+  ) or not exists (
+    select 1 from public.options
+    where id = p_new_option_id and poll_id = p_poll_id
+  ) then
+    raise exception 'option does not belong to poll';
+  end if;
+
   delete from public.votes
   where poll_id = p_poll_id and voter_token = p_voter_token;
 

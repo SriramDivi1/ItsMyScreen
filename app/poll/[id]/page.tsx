@@ -33,9 +33,12 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
   const [error, setError] = useState<string | null>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [toastVariant, setToastVariant] = useState<'success' | 'warning'>('success');
   const [showQr, setShowQr] = useState(false);
   const [copied, setCopied] = useState(false);
   const [pollUrl, setPollUrl] = useState('');
+  const [lastVoteAt, setLastVoteAt] = useState(0);
+  const VOTE_COOLDOWN_MS = 2000;
   useEffect(() => {
     const t = setTimeout(() => {
       if (typeof window !== 'undefined') setPollUrl(window.location.href);
@@ -43,18 +46,23 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
     return () => clearTimeout(t);
   }, [id]);
 
-  const showToast = (message: string) => {
+  const showToast = (message: string, variant: 'success' | 'warning' = 'success') => {
     setToast(message);
+    setToastVariant(variant);
     setTimeout(() => setToast(null), 3500);
   };
 
   const getVoterToken = () => {
-    let token = localStorage.getItem('voter_token');
-    if (!token) {
-      token = crypto.randomUUID();
-      localStorage.setItem('voter_token', token);
+    try {
+      let token = localStorage.getItem('voter_token');
+      if (!token) {
+        token = crypto.randomUUID();
+        localStorage.setItem('voter_token', token);
+      }
+      return token;
+    } catch {
+      return `session-${crypto.randomUUID()}`;
     }
-    return token;
   };
 
   const fetchPollData = useCallback(async () => {
@@ -85,7 +93,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
       .eq('poll_id', id)
       .eq('voter_token', token)
       .maybeSingle();
-    if (existingVote) setVotedOptionId(existingVote.option_id);
+    setVotedOptionId(existingVote?.option_id ?? null);
 
     setLoading(false);
   }, [id]);
@@ -110,6 +118,11 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
   const handleVote = async (optionId: string) => {
     if (voting) return;
     if (votedOptionId === optionId) return;
+    const now = Date.now();
+    if (now - lastVoteAt < VOTE_COOLDOWN_MS) {
+      showToast('Please wait a moment before voting again.', 'warning');
+      return;
+    }
     setVoting(true);
     const token = getVoterToken();
 
@@ -122,6 +135,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
       });
       if (!error) {
         setVotedOptionId(optionId);
+        setLastVoteAt(Date.now());
         showToast('Vote updated!');
         fetchPollData();
       } else {
@@ -135,6 +149,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
       });
       if (!error) {
         setVotedOptionId(optionId);
+        setLastVoteAt(Date.now());
         setShowConfetti(true);
         showToast('Vote submitted!');
         setTimeout(() => setShowConfetti(false), 2500);
@@ -147,10 +162,27 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
   };
 
   const copyLink = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    showToast('Link copied!');
-    setTimeout(() => setCopied(false), 2000);
+    const url = window.location.href;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'absolute';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopied(true);
+      showToast('Link copied!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      showToast('Could not copy link. Copy the URL manually.', 'warning');
+    }
   };
 
   const exportCsv = () => {
@@ -204,9 +236,13 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
       {showConfetti && <Confetti />}
 
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-toast">
-          <div className="card px-5 py-3 flex items-center gap-2 text-sm font-medium shadow-lg">
-            <Check className="w-4 h-4 text-[var(--color-success)]" />
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-toast" role="status" aria-live="polite">
+          <div className={`card px-5 py-3 flex items-center gap-2 text-sm font-medium shadow-lg ${toastVariant === 'warning' ? 'border-[var(--color-accent)]/50' : ''}`}>
+            {toastVariant === 'warning' ? (
+              <AlertCircle className="w-4 h-4 text-[var(--color-accent)]" />
+            ) : (
+              <Check className="w-4 h-4 text-[var(--color-success)]" />
+            )}
             {toast}
           </div>
         </div>
@@ -349,19 +385,21 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             <button
               onClick={() => setShowQr(!showQr)}
               className={`btn-secondary !py-2 !px-4 text-sm ${showQr ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)]/20' : ''}`}
+              aria-label={showQr ? 'Hide QR code' : 'Show QR code'}
+              aria-pressed={showQr}
             >
                 <QrCode className="w-3.5 h-3.5" />
                 QR
               </button>
-              <button onClick={exportCsv} className="btn-secondary !py-2 !px-4 text-sm">
+              <button onClick={exportCsv} className="btn-secondary !py-2 !px-4 text-sm" aria-label="Export results as CSV">
                 <Download className="w-3.5 h-3.5" />
                 CSV
               </button>
-              <button onClick={() => window.print()} className="btn-secondary !py-2 !px-4 text-sm">
+              <button onClick={() => window.print()} className="btn-secondary !py-2 !px-4 text-sm" aria-label="Print poll">
                 <Printer className="w-3.5 h-3.5" />
                 Print
               </button>
-              <button onClick={copyLink} className="btn-secondary !py-2 !px-4 text-sm">
+              <button onClick={copyLink} className="btn-secondary !py-2 !px-4 text-sm" aria-label={copied ? 'Link copied' : 'Copy poll link'}>
                 {copied ? (
                   <>
                     <Check className="w-3.5 h-3.5 text-[var(--color-success)]" />

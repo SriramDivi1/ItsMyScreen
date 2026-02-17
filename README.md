@@ -142,6 +142,28 @@ All three tables are added to the `supabase_realtime` publication, enabling live
 
 ---
 
+## 🛡️ Fairness Controls (Anti-Abuse)
+
+The app includes two mechanisms to reduce repeat and abusive voting:
+
+### 1. One Vote Per Person (Voter Token)
+
+- **What it does:** Each browser gets a unique token (`crypto.randomUUID`) stored in `localStorage`. The database enforces `unique(poll_id, voter_token)` so only one vote per token per poll is allowed.
+- **What it prevents:** The same user voting multiple times from the same browser on the same poll.
+- **Limitations:** Clearing `localStorage`, using incognito/private mode, or a different browser/device yields a new token and thus another vote. This is acceptable for a no-sign-up product.
+
+### 2. Vote Cooldown
+
+- **What it does:** A 2-second cooldown is enforced between vote attempts (including vote changes). If a user tries to vote again within 2 seconds, the request is blocked and a toast message is shown.
+- **What it prevents:** Accidental double-clicks, rapid automated clicking, and bot-style hammering of the vote endpoint.
+- **Limitations:** Determined attackers can still space out votes, but the cooldown slows abuse and improves UX for normal users.
+
+### Additional Integrity
+
+- **Option validation (RPC):** The `vote` and `change_vote` RPCs validate that the selected option belongs to the poll before counting. This prevents cross-poll vote injection and malformed requests.
+
+---
+
 ## 📄 Pages
 
 | Route | Description |

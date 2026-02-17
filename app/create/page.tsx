@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
+import { sanitizeText } from '../../utils/sanitize';
 import { PenLine, Plus, Trash2, Loader2, Eye } from 'lucide-react';
 
 const MAX_QUESTION_LENGTH = 200;
@@ -23,6 +24,7 @@ export default function CreatePoll() {
   const [options, setOptions] = useState(['', '']);
   const [loading, setLoading] = useState(false);
   const [duplicateError, setDuplicateError] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   const validOptions = options.filter((o) => o.trim() !== '');
   const hasDuplicates =
@@ -32,18 +34,33 @@ export default function CreatePoll() {
     if (!question.trim() || validOptions.length < 2 || hasDuplicates) return;
     setLoading(true);
     setDuplicateError(false);
+    setCreateError(null);
+    const sanitizedQuestion = sanitizeText(question, MAX_QUESTION_LENGTH);
+    const sanitizedDescription = sanitizeText(description, MAX_DESCRIPTION_LENGTH);
+    const sanitizedOptions = validOptions.map((t) => sanitizeText(t, MAX_OPTION_LENGTH));
+
     const { data: poll, error } = await supabase
       .from('polls')
-      .insert({ question: question.trim(), description: description.trim() || null })
+      .insert({ question: sanitizedQuestion, description: sanitizedDescription || null })
       .select()
       .single();
+
     if (error || !poll) {
+      setCreateError('Could not create poll. Please try again.');
       setLoading(false);
       return;
     }
-    await supabase.from('options').insert(
-      validOptions.map((text) => ({ poll_id: poll.id, text: text.trim() }))
+
+    const { error: optionsError } = await supabase.from('options').insert(
+      sanitizedOptions.map((text) => ({ poll_id: poll.id, text }))
     );
+
+    if (optionsError) {
+      setCreateError('Poll created but options failed to save. Please try again.');
+      setLoading(false);
+      return;
+    }
+
     router.push(`/poll/${poll.id}`);
   };
 
@@ -208,6 +225,10 @@ export default function CreatePoll() {
 
             {duplicateError && (
               <p className="text-sm text-[var(--color-error)] mb-4">Please remove duplicate options.</p>
+            )}
+
+            {createError && (
+              <p className="text-sm text-[var(--color-error)] mb-4">{createError}</p>
             )}
 
             <button
