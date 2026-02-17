@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
 import { sanitizeText } from '../../utils/sanitize';
@@ -11,7 +11,7 @@ const MAX_QUESTION_LENGTH = 200;
 const MAX_OPTION_LENGTH = 100;
 const MAX_DESCRIPTION_LENGTH = 300;
 
-export default function CreatePoll() {
+function CreatePollContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [question, setQuestion] = useState('');
@@ -24,6 +24,7 @@ export default function CreatePoll() {
     if (templateId) {
       const t = getTemplateById(templateId);
       if (t) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setQuestion(t.question);
         setOptions([...t.options, '']);
         setDescription(t.description ?? '');
@@ -131,9 +132,8 @@ export default function CreatePoll() {
               />
               <div className="flex justify-end mt-1">
                 <span
-                  className={`text-xs ${
-                    charPercent > 90 ? 'text-[var(--color-error)]' : charPercent > 70 ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
-                  }`}
+                  className={`text-xs ${charPercent > 90 ? 'text-[var(--color-error)]' : charPercent > 70 ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
+                    }`}
                 >
                   {question.length}/{MAX_QUESTION_LENGTH}
                 </span>
@@ -173,13 +173,12 @@ export default function CreatePoll() {
                     <div className="flex-1 min-w-0">
                       <input
                         type="text"
-                        className={`input-field ${
-                          hasDuplicates &&
+                        className={`input-field ${hasDuplicates &&
                           opt.trim() &&
                           validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
-                            ? '!border-[var(--color-error)]'
-                            : ''
-                        }`}
+                          ? '!border-[var(--color-error)]'
+                          : ''
+                          }`}
                         placeholder={`Option ${i + 1}`}
                         value={opt}
                         onChange={(e) => {
@@ -192,17 +191,16 @@ export default function CreatePoll() {
                       />
                       <div className="flex justify-between mt-0.5">
                         <span
-                          className={`text-xs ${
-                            hasDuplicates &&
+                          className={`text-xs ${hasDuplicates &&
                             opt.trim() &&
                             validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
-                              ? 'text-[var(--color-error)]'
-                              : 'text-[var(--color-text-muted)]'
-                          }`}
+                            ? 'text-[var(--color-error)]'
+                            : 'text-[var(--color-text-muted)]'
+                            }`}
                         >
                           {hasDuplicates &&
-                          opt.trim() &&
-                          validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
+                            opt.trim() &&
+                            validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
                             ? 'Duplicate option'
                             : ''}
                         </span>
@@ -302,5 +300,19 @@ export default function CreatePoll() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CreatePoll() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="w-8 h-8 animate-spin text-[var(--color-accent)]" />
+        </div>
+      }
+    >
+      <CreatePollContent />
+    </Suspense>
   );
 }

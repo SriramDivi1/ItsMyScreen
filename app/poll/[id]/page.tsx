@@ -52,8 +52,8 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
         setTimeout(() => setToast(null), 3500);
     };
 
-  const getVoterToken = useCallback(() => {
-    try {
+    const getVoterToken = useCallback(() => {
+        try {
             let token = localStorage.getItem('voter_token');
             if (!token) {
                 token = crypto.randomUUID();
@@ -138,6 +138,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
     const handleVote = async (optionId: string) => {
         if (voting) return;
         if (votedOptionId === optionId) return;
+        // eslint-disable-next-line react-hooks/purity
         const now = Date.now();
         if (now - lastVoteAt < VOTE_COOLDOWN_MS) {
             showToast('Please wait a moment before voting again.', 'warning');
@@ -155,14 +156,15 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             });
             if (!error) {
                 setVotedOptionId(optionId);
+                // eslint-disable-next-line react-hooks/purity
                 setLastVoteAt(Date.now());
                 setOptions((prev) =>
                     prev.map((o) =>
                         o.id === votedOptionId
                             ? { ...o, vote_count: Math.max(0, o.vote_count - 1) }
                             : o.id === optionId
-                              ? { ...o, vote_count: o.vote_count + 1 }
-                              : o
+                                ? { ...o, vote_count: o.vote_count + 1 }
+                                : o
                     )
                 );
                 showToast('Vote updated!');
@@ -177,6 +179,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             });
             if (!error) {
                 setVotedOptionId(optionId);
+                // eslint-disable-next-line react-hooks/purity
                 setLastVoteAt(Date.now());
                 setOptions((prev) =>
                     prev.map((o) => (o.id === optionId ? { ...o, vote_count: o.vote_count + 1 } : o))
@@ -334,8 +337,8 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                     onClick={() => handleVote(option.id)}
                                     disabled={voting}
                                     className={`w-full text-left rounded-xl p-4 min-h-[48px] sm:min-h-0 transition-all duration-300 ease-out border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 active:scale-[0.99] ${isVoted
-                                            ? 'bg-[var(--color-accent-muted)]/30 border-[var(--color-accent)]/40'
-                                            : 'bg-[var(--color-base)] border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent-muted)]/10'
+                                        ? 'bg-[var(--color-accent-muted)]/30 border-[var(--color-accent)]/40'
+                                        : 'bg-[var(--color-base)] border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent-muted)]/10'
                                         }`}
                                 >
                                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
@@ -354,10 +357,10 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                             )}
                                             <span
                                                 className={`font-medium break-words ${isVoted
-                                                        ? 'text-[var(--color-text-primary)]'
-                                                        : isLeader && hasVoted
-                                                            ? 'text-[var(--color-accent)]'
-                                                            : 'text-[var(--color-text-primary)]'
+                                                    ? 'text-[var(--color-text-primary)]'
+                                                    : isLeader && hasVoted
+                                                        ? 'text-[var(--color-accent)]'
+                                                        : 'text-[var(--color-text-primary)]'
                                                     }`}
                                             >
                                                 {option.text}
