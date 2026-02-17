@@ -1,12 +1,27 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BarChart2, Plus, Compass } from 'lucide-react';
+import { BarChart2, Plus, Compass, LogIn, LogOut, ChevronDown } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
   const pathname = usePathname();
   const isCreatePage = pathname === '/create';
+  const { user, profile, loading, signOut } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const close = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-base)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
@@ -41,6 +56,47 @@ export default function Navbar() {
                 <Plus className="w-4 h-4" />
                 <span>Create poll</span>
               </Link>
+
+              {!loading && (
+                user ? (
+                  <div className="relative" ref={menuRef}>
+                    <button
+                      onClick={() => setMenuOpen((o) => !o)}
+                      className="flex items-center gap-2 btn-secondary text-sm !py-2 !px-4"
+                      aria-expanded={menuOpen}
+                      aria-haspopup="true"
+                      aria-label="Account menu"
+                    >
+                      <span className="truncate max-w-[100px]">
+                        {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {menuOpen && (
+                      <div className="absolute right-0 mt-1 py-1 w-48 card shadow-lg">
+                        <button
+                          onClick={() => {
+                            signOut();
+                            setMenuOpen(false);
+                          }}
+                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
+                        >
+                          <LogOut className="w-4 h-4" />
+                          Sign out
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <Link
+                    href="/auth"
+                    className="btn-secondary text-sm !py-2 !px-4"
+                  >
+                    <LogIn className="w-4 h-4" />
+                    <span>Sign in</span>
+                  </Link>
+                )
+              )}
             </div>
           )}
         </div>

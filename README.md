@@ -13,8 +13,8 @@ Create instant polls, share them with anyone, and watch votes roll in live. No s
 
 - **Instant Poll Creation** — Create a poll in under 10 seconds with a question and up to 10 options
 - **Real-time Voting** — Votes update live for all viewers using Supabase Realtime subscriptions
-- **No Authentication Required** — Anyone with the link can vote, no sign-up needed
-- **One Vote Per Person** — Uses browser-generated tokens to prevent duplicate voting
+- **Optional Sign-in** — Email OTP sign-in with first/last name for first-time users; anonymous voting still works
+- **One Vote Per Person** — Uses browser tokens or user ID when signed in to prevent duplicate voting
 - **Live Results** — Animated progress bars, percentages, and vote counts update in real-time
 - **Share Instantly** — One-click copy poll link to clipboard
 - **Recent Polls Discovery** — Browse and vote on community polls from the home page
@@ -50,9 +50,14 @@ Create instant polls, share them with anyone, and watch votes roll in live. No s
 ```
 ItsMyScreen/
 ├── app/
+│   ├── auth/
+│   │   ├── page.tsx            # Sign in with email OTP
+│   │   └── complete/page.tsx   # First-time: first name + last name
 │   ├── components/
-│   │   ├── Navbar.tsx          # Sticky glassmorphism navigation bar
+│   │   ├── Navbar.tsx          # Navigation with auth menu
 │   │   └── Footer.tsx          # Minimalist branded footer
+│   ├── contexts/
+│   │   └── AuthContext.tsx     # Auth state and session
 │   ├── create/
 │   │   └── page.tsx            # Poll creation form with live preview
 │   ├── poll/
@@ -100,8 +105,9 @@ npm install
    - **Option A (SQL Editor, recommended):** Run `npm run db:sql` to print the SQL, then paste it into **Supabase → SQL Editor** and run.
    - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password npm run db:apply`. For pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_DB_PASSWORD=... npm run db:apply`
 3. Copy your project URL and Anon Key from **Settings → API**
+4. Enable Email OTP (optional, for sign-in): In **Authentication → Providers → Email**, enable the provider. For OTP codes (6-digit), ensure the "Magic Link" or "Email OTP" template in **Authentication → Email Templates** includes `{{ .Token }}` so users receive the code.
 
-### 4. Configure Environment Variables
+### 5. Configure Environment Variables
 
 Create a `.env.local` file in the project root:
 
@@ -110,7 +116,7 @@ NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-### 5. Run the Development Server
+### 6. Run the Development Server
 
 ```bash
 npm run dev
@@ -130,7 +136,8 @@ The app uses three tables and one RPC function in Supabase:
 |---|---|
 | `polls` | Stores poll questions with auto-generated UUIDs and timestamps |
 | `options` | Poll options with a `vote_count` counter, linked to polls via foreign key |
-| `votes` | Individual vote records with voter tokens, ensuring one vote per person per poll |
+| `votes` | Individual vote records with voter tokens (or `user:uuid` for signed-in users), ensuring one vote per person per poll |
+| `profiles` | First name, last name for authenticated users (linked to `auth.users`) |
 
 ### RPC Function
 
@@ -148,7 +155,7 @@ The app includes two mechanisms to reduce repeat and abusive voting:
 
 ### 1. One Vote Per Person (Voter Token)
 
-- **What it does:** Each browser gets a unique token (`crypto.randomUUID`) stored in `localStorage`. The database enforces `unique(poll_id, voter_token)` so only one vote per token per poll is allowed.
+- **What it does:** Anonymous users get a unique token (`crypto.randomUUID`) in `localStorage`. Signed-in users use `user:{uuid}`. The database enforces `unique(poll_id, voter_token)` so only one vote per token per poll is allowed.
 - **What it prevents:** The same user voting multiple times from the same browser on the same poll.
 - **Limitations:** Clearing `localStorage`, using incognito/private mode, or a different browser/device yields a new token and thus another vote. This is acceptable for a no-sign-up product.
 
@@ -171,6 +178,8 @@ The app includes two mechanisms to reduce repeat and abusive voting:
 | `/` | Home page — Hero section, "How It Works" steps, recent polls grid |
 | `/create` | Create Poll — Form with character counter, live preview, option management |
 | `/poll/[id]` | Poll View — Vote, see results with animated bars, share link, confetti on vote |
+| `/auth` | Sign in — Email OTP verification |
+| `/auth/complete` | First-time users — Enter first name and last name |
 
 ---
 
