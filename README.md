@@ -260,12 +260,6 @@ npm run build   # Test locally
 
 ---
 
-# 📝 Notes / README (Submission)
-
-> For the Google Form — copy below or use **[NOTES.md](NOTES.md)**.
-
----
-
 ## Two fairness / anti-abuse mechanisms
 
 ### 1. Voter token (one vote per device)
@@ -313,6 +307,6 @@ npm run build   # Test locally
 
 **[▶ Live Demo](https://itsmyscreen-by-sriram.vercel.app)** · **[📦 GitHub](https://github.com/SriramDivi1/ItsMyScreen)**
 
-Built with Next.js & Supabase
+Built with ❤️ By Sriram using Next.js & Supabase
 
 </div>
