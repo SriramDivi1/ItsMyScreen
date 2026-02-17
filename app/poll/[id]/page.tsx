@@ -186,9 +186,9 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
 
   if (error || !poll) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-red-100 flex items-center justify-center mb-6">
-          <AlertCircle className="w-8 h-8 text-red-600" />
+      <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center pt-24">
+        <div className="w-16 h-16 rounded-2xl bg-[var(--color-error-muted)] flex items-center justify-center mb-6">
+          <AlertCircle className="w-8 h-8 text-[var(--color-error)]" />
         </div>
         <h2 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">Poll not found</h2>
         <p className="text-[var(--color-text-secondary)] mb-6 max-w-sm">{error}</p>
@@ -224,8 +224,9 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
           <div className="flex items-center gap-2">
             <button
               onClick={() => fetchPollData()}
-              className="p-2 rounded-lg hover:bg-[var(--color-base)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+              className="p-2 rounded-lg hover:bg-[var(--color-base)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
               title="Refresh"
+              aria-label="Refresh poll"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
@@ -263,7 +264,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                   key={option.id}
                   onClick={() => handleVote(option.id)}
                   disabled={voting}
-                  className={`w-full text-left rounded-xl p-4 transition-all duration-300 border ${
+                  className={`w-full text-left rounded-xl p-4 transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${
                     isVoted
                       ? 'bg-[var(--color-accent-muted)]/30 border-[var(--color-accent)]/40'
                       : 'bg-[var(--color-base)] border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent-muted)]/10'
@@ -345,10 +346,10 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
               {totalVotes} votes · Real-time
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setShowQr(!showQr)}
-                className={`btn-secondary !py-2 !px-4 text-sm ${showQr ? 'border-[var(--color-accent)]' : ''}`}
-              >
+            <button
+              onClick={() => setShowQr(!showQr)}
+              className={`btn-secondary !py-2 !px-4 text-sm ${showQr ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)]/20' : ''}`}
+            >
                 <QrCode className="w-3.5 h-3.5" />
                 QR
               </button>

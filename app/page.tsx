@@ -73,14 +73,14 @@ export default function Home() {
 
           <div className="animate-fade-in-up stagger-3 flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/create" className="btn-primary text-base w-full sm:w-auto">
-              <span>Create a Poll</span>
+              <span>Create a poll</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/polls"
               className="btn-secondary text-base w-full sm:w-auto"
             >
-              Browse Polls
+              Browse polls
             </Link>
             <a
               href="https://github.com/SriramDivi1/ItsMyScreen"
@@ -171,7 +171,7 @@ export default function Home() {
             </p>
             <Link
               href="/polls"
-              className="text-sm font-medium text-[var(--color-accent)] hover:underline"
+              className="text-sm font-medium text-[var(--color-accent)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 rounded"
             >
               Browse all polls →
             </Link>
@@ -202,18 +202,18 @@ export default function Home() {
                 Be the first to create a poll and get instant feedback.
               </p>
               <Link href="/create" className="btn-primary inline-flex gap-2">
-                <span>Create Poll</span>
+                <span>Create a poll</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {recentPolls.map((poll, i) => (
-                <Link key={poll.id} href={`/poll/${poll.id}`}>
+                <Link key={poll.id} href={`/poll/${poll.id}`} className="group block">
                   <div
-                    className={`animate-fade-in-up stagger-${Math.min(i + 1, 6)} card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer`}
+                    className={`animate-fade-in-up stagger-${Math.min(i + 1, 6)} card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer group-hover:border-[var(--color-accent)]/30`}
                   >
-                    <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4 group-hover:text-[var(--color-accent)]">
+                    <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4 group-hover:text-[var(--color-accent)] transition-colors">
                       {poll.question}
                     </h3>
                     <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">

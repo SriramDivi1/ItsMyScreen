@@ -104,7 +104,7 @@ export default function CreatePoll() {
               <div className="flex justify-end mt-1">
                 <span
                   className={`text-xs ${
-                    charPercent > 90 ? 'text-red-500' : charPercent > 70 ? 'text-amber-600' : 'text-[var(--color-text-muted)]'
+                    charPercent > 90 ? 'text-[var(--color-error)]' : charPercent > 70 ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-muted)]'
                   }`}
                 >
                   {question.length}/{MAX_QUESTION_LENGTH}
@@ -149,7 +149,7 @@ export default function CreatePoll() {
                           hasDuplicates &&
                           opt.trim() &&
                           validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
-                            ? 'border-red-500'
+                            ? '!border-[var(--color-error)]'
                             : ''
                         }`}
                         placeholder={`Option ${i + 1}`}
@@ -168,7 +168,7 @@ export default function CreatePoll() {
                             hasDuplicates &&
                             opt.trim() &&
                             validOptions.filter((o) => o.trim().toLowerCase() === opt.trim().toLowerCase()).length > 1
-                              ? 'text-red-500'
+                              ? 'text-[var(--color-error)]'
                               : 'text-[var(--color-text-muted)]'
                           }`}
                         >
@@ -186,7 +186,7 @@ export default function CreatePoll() {
                     {options.length > 2 && (
                       <button
                         onClick={() => setOptions(options.filter((_, j) => j !== i))}
-                        className="p-2 text-[var(--color-text-muted)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-2 text-[var(--color-text-muted)] hover:text-[var(--color-error)] hover:bg-[var(--color-error-muted)] rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -207,7 +207,7 @@ export default function CreatePoll() {
             )}
 
             {duplicateError && (
-              <p className="text-sm text-red-500 mb-4">Please remove duplicate options.</p>
+              <p className="text-sm text-[var(--color-error)] mb-4">Please remove duplicate options.</p>
             )}
 
             <button

@@ -14,7 +14,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link
             href="/"
-            className="flex items-center gap-2.5 group"
+            className="flex items-center gap-2.5 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
             aria-label="ItsMyScreen home"
           >
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-light)] flex items-center justify-center shadow-sm">
@@ -39,7 +39,7 @@ export default function Navbar() {
                 className="btn-primary text-sm !py-2 !px-5"
               >
                 <Plus className="w-4 h-4" />
-                <span>Create Poll</span>
+                <span>Create poll</span>
               </Link>
             </div>
           )}

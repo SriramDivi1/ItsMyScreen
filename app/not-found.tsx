@@ -5,7 +5,7 @@ import { Home, ArrowLeft, MapPin } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center pt-20">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center pt-24">
       <div className="w-20 h-20 rounded-2xl bg-[var(--color-accent-muted)]/50 flex items-center justify-center mb-6">
         <MapPin className="w-10 h-10 text-[var(--color-accent)]" />
       </div>

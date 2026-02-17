@@ -14,6 +14,8 @@
   --color-accent-muted: #fed7aa;
   --color-success: #16a34a;
   --color-success-muted: #dcfce7;
+  --color-error: #dc2626;
+  --color-error-muted: #fef2f2;
 }
 
 @layer base {
@@ -115,6 +117,12 @@
     color: var(--color-accent);
   }
 
+  .btn-primary:focus-visible,
+  .btn-secondary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--color-base), 0 0 0 4px var(--color-accent);
+  }
+
   .input-field {
     width: 100%;
     padding: 12px 16px;
@@ -134,6 +142,14 @@
   .input-field:focus {
     border-color: var(--color-accent);
     box-shadow: 0 0 0 3px rgba(194, 65, 12, 0.15);
+  }
+
+  .input-field:focus-visible {
+    outline: none;
+  }
+
+  select.input-field {
+    cursor: pointer;
   }
 
   .gradient-bar-track {

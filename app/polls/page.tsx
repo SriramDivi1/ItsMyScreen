@@ -132,7 +132,7 @@ export default function BrowsePolls() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {polls.map((poll) => (
-              <Link key={poll.id} href={`/poll/${poll.id}`}>
+              <Link key={poll.id} href={`/poll/${poll.id}`} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 rounded-xl">
                 <div className="card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer">
                   <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4">
                     {poll.question}

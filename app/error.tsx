@@ -16,9 +16,9 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center pt-20">
-      <div className="w-20 h-20 rounded-2xl bg-red-100 flex items-center justify-center mb-6">
-        <AlertCircle className="w-10 h-10 text-red-600" />
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 text-center pt-24">
+      <div className="w-20 h-20 rounded-2xl bg-[var(--color-error-muted)] flex items-center justify-center mb-6">
+        <AlertCircle className="w-10 h-10 text-[var(--color-error)]" />
       </div>
       <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] mb-2">
         Something went wrong
