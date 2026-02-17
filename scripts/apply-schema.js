@@ -19,7 +19,7 @@ try {
             }
         });
     }
-} catch (_) {}
+} catch { /* ignore */ }
 
 // Connection options (pick one):
 //

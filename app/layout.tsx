@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
 
 export const metadata: Metadata = {
   title: "ItsMyScreen — Real-time Polls",
@@ -31,10 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className={`${inter.className} antialiased flex flex-col min-h-screen`}>
-        <div className="aurora-bg" />
-        <div className="dot-grid" />
+    <html lang="en" className={dmSans.variable}>
+      <body className={`${dmSans.className} antialiased flex flex-col min-h-screen`}>
         <Navbar />
         <main className="flex-1 pt-20 relative z-10">{children}</main>
         <Footer />

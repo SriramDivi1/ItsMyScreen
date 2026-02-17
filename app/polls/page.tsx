@@ -21,9 +21,7 @@ export default function BrowsePolls() {
 
   const fetchPolls = useCallback(async () => {
     setLoading(true);
-    const query = supabase
-      .from('polls')
-      .select('id, question, created_at, options(vote_count)');
+    const query = supabase.from('polls').select('id, question, created_at, options(vote_count)');
 
     if (search.trim()) {
       query.ilike('question', `%${search.trim()}%`);
@@ -70,13 +68,15 @@ export default function BrowsePolls() {
   };
 
   return (
-    <div className="min-h-screen p-4 sm:p-8">
+    <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2">
-            <span className="gradient-text">Browse Polls</span>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
+            <span className="gradient-text">Browse polls</span>
           </h1>
-          <p className="text-[var(--color-text-secondary)]">Discover and vote on community polls</p>
+          <p className="text-[var(--color-text-secondary)]">
+            Discover and vote on community polls
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -87,7 +87,7 @@ export default function BrowsePolls() {
               placeholder="Search polls..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field w-full pl-11"
+              className="input-field pl-11"
               aria-label="Search polls"
             />
           </div>
@@ -105,25 +105,27 @@ export default function BrowsePolls() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="glass-card p-5 animate-pulse">
-                <div className="h-4 bg-white/10 rounded mb-3 w-full" />
-                <div className="h-4 bg-white/10 rounded mb-4 w-3/4" />
+              <div key={i} className="card p-6 animate-pulse">
+                <div className="h-4 bg-[var(--color-border)] rounded mb-3 w-full" />
+                <div className="h-4 bg-[var(--color-border)] rounded mb-6 w-3/4" />
                 <div className="flex justify-between">
-                  <div className="h-3 bg-white/10 rounded w-16" />
-                  <div className="h-3 bg-white/10 rounded w-14" />
+                  <div className="h-3 bg-[var(--color-border)] rounded w-16" />
+                  <div className="h-3 bg-[var(--color-border)] rounded w-14" />
                 </div>
               </div>
             ))}
           </div>
         ) : polls.length === 0 ? (
-          <div className="text-center py-16 glass-card">
+          <div className="card p-12 text-center">
             <BarChart3 className="w-12 h-12 text-[var(--color-text-muted)] mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-white mb-2">No polls found</h3>
-            <p className="text-sm text-[var(--color-text-secondary)] mb-6">
-              {search ? 'Try a different search term.' : 'Be the first to create a poll.'}
+            <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
+              No polls found
+            </h3>
+            <p className="text-[var(--color-text-secondary)] mb-6">
+              {search ? 'Try a different search.' : 'Be the first to create a poll.'}
             </p>
-            <Link href="/create" className="btn-gradient inline-flex items-center gap-2 !py-3 !px-6">
-              <span>Create Poll</span>
+            <Link href="/create" className="btn-primary inline-flex gap-2">
+              <span>Create poll</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -131,8 +133,8 @@ export default function BrowsePolls() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {polls.map((poll) => (
               <Link key={poll.id} href={`/poll/${poll.id}`}>
-                <div className="glass-card p-5 group cursor-pointer h-full hover:border-[var(--color-border-hover)] transition-all">
-                  <h3 className="font-medium text-white group-hover:text-violet-300 transition-colors line-clamp-2 mb-4">
+                <div className="card p-6 h-full hover:border-[var(--color-accent)]/30 transition-colors cursor-pointer">
+                  <h3 className="font-medium text-[var(--color-text-primary)] line-clamp-2 mb-4">
                     {poll.question}
                   </h3>
                   <div className="flex items-center justify-between text-xs text-[var(--color-text-muted)]">

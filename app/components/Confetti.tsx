@@ -2,7 +2,15 @@
 
 import { useMemo } from 'react';
 
-const CONFETTI_COLORS = ['#8b5cf6', '#a78bfa', '#c4b5fd', '#06b6d4', '#22d3ee', '#67e8f9', '#a855f7'];
+const CONFETTI_COLORS = [
+  '#c2410c',
+  '#ea580c',
+  '#f97316',
+  '#0d9488',
+  '#14b8a6',
+  '#78716c',
+  '#57534e',
+];
 
 function seededRandom(seed: number): number {
   const x = Math.sin(seed * 9999) * 10000;

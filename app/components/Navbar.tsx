@@ -2,39 +2,49 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Zap, Plus, Compass } from 'lucide-react';
+import { BarChart2, Plus, Compass } from 'lucide-react';
 
 export default function Navbar() {
-    const pathname = usePathname();
-    const isCreatePage = pathname === '/create';
+  const pathname = usePathname();
+  const isCreatePage = pathname === '/create';
 
-    return (
-        <nav className="fixed top-0 left-0 right-0 z-50">
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                <div className="flex items-center justify-between h-16 my-2 px-5 rounded-2xl glass-card">
-                    <Link href="/" className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 rounded-lg" aria-label="ItsMyScreen home">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center group-hover:shadow-lg group-hover:shadow-violet-500/25 transition-all duration-300">
-                            <Zap className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="text-lg font-bold tracking-tight">
-                            <span className="gradient-text">ItsMyScreen</span>
-                        </span>
-                    </Link>
-
-                    {!isCreatePage && (
-                        <div className="flex items-center gap-2">
-                            <Link href="/polls" className="btn-secondary text-sm !py-2.5 !px-4 !rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12]">
-                                <Compass className="w-4 h-4" />
-                                <span>Browse</span>
-                            </Link>
-                            <Link href="/create" className="btn-gradient text-sm !py-2.5 !px-5 !rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a12]">
-                                <Plus className="w-4 h-4" />
-                                <span>Create Poll</span>
-                            </Link>
-                        </div>
-                    )}
-                </div>
+  return (
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-base)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6">
+        <div className="flex items-center justify-between h-16">
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 group"
+            aria-label="ItsMyScreen home"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--color-accent)] to-[var(--color-accent-light)] flex items-center justify-center shadow-sm">
+              <BarChart2 className="w-4 h-4 text-white" />
             </div>
-        </nav>
-    );
+            <span className="text-lg font-bold tracking-tight text-[var(--color-text-primary)]">
+              <span className="gradient-text">ItsMyScreen</span>
+            </span>
+          </Link>
+
+          {!isCreatePage && (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/polls"
+                className="btn-secondary text-sm !py-2 !px-4"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Browse</span>
+              </Link>
+              <Link
+                href="/create"
+                className="btn-primary text-sm !py-2 !px-5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create Poll</span>
+              </Link>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 }
