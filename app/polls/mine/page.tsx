@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { supabase } from '../../utils/supabase';
-import { timeAgo } from '../../utils/timeAgo';
-import { ArrowRight, Search, Users, Clock, BarChart3 } from 'lucide-react';
+import { supabase } from '../../../utils/supabase';
+import { useAuth } from '../../../contexts/AuthContext';
+import { ArrowRight, Users, Clock, BarChart3 } from 'lucide-react';
+import { timeAgo } from '../../../utils/timeAgo';
 
 type Poll = {
   id: string;
@@ -13,95 +15,66 @@ type Poll = {
   options: { vote_count: number }[];
 };
 
-export default function BrowsePolls() {
+export default function MyPollsPage() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
   const [polls, setPolls] = useState<Poll[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [searchDebounced, setSearchDebounced] = useState('');
-  const [sort, setSort] = useState<'recent' | 'votes'>('recent');
   const [now, setNow] = useState(() => Date.now());
 
-  const fetchPolls = useCallback(async () => {
-    setLoading(true);
-    const query = supabase.from('polls').select('id, question, created_at, options(vote_count)');
-
-    if (searchDebounced.trim()) {
-      query.ilike('question', `%${searchDebounced.trim()}%`);
-    }
-
-    query.order('created_at', { ascending: false });
-
-    const { data } = await query.limit(50);
-    let results = data ?? [];
-
-    if (sort === 'votes') {
-      results = [...results].sort((a, b) => {
-        const votesA = a.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
-        const votesB = b.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
-        return votesB - votesA;
-      });
-    }
-
-    setPolls(results);
-    setLoading(false);
-  }, [searchDebounced, sort]);
-
   useEffect(() => {
-    const t = setTimeout(() => setSearchDebounced(search), 300);
-    return () => clearTimeout(t);
-  }, [search]);
-
-  useEffect(() => {
-    const id = setTimeout(() => fetchPolls(), 0);
-    return () => clearTimeout(id);
-  }, [fetchPolls]);
+    if (!authLoading && !user) {
+      router.push('/auth');
+      return;
+    }
+  }, [user, authLoading, router]);
 
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 60000);
     return () => clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    if (!user) return;
+    const fetch = async () => {
+      setLoading(true);
+      const { data } = await supabase
+        .from('polls')
+        .select('id, question, created_at, options(vote_count)')
+        .eq('created_by', user.id)
+        .order('created_at', { ascending: false });
+      setPolls((data as Poll[]) ?? []);
+      setLoading(false);
+    };
+    fetch();
+  }, [user]);
+
   const totalVotes = (poll: Poll) =>
     poll.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
+
+  if (authLoading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[var(--color-accent)]/30 border-t-[var(--color-accent)] rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-10">
+        <div className="mb-10">
           <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
-            <span className="gradient-text">Browse polls</span>
+            <span className="gradient-text">My polls</span>
           </h1>
           <p className="text-[var(--color-text-secondary)]">
-            Discover and vote on community polls
+            Polls you&apos;ve created
           </p>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-secondary)]" />
-            <input
-              type="text"
-              placeholder="Search polls..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-11"
-              aria-label="Search polls"
-            />
-          </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as 'recent' | 'votes')}
-            className="input-field w-full sm:w-44"
-            aria-label="Sort by"
-          >
-            <option value="recent">Most recent</option>
-            <option value="votes">Most votes</option>
-          </select>
         </div>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
+            {[1, 2, 3, 4].map((i) => (
               <div key={i} className="card p-6 animate-pulse">
                 <div className="h-4 bg-[var(--color-border)] rounded mb-3 w-full" />
                 <div className="h-4 bg-[var(--color-border)] rounded mb-6 w-3/4" />
@@ -116,10 +89,10 @@ export default function BrowsePolls() {
           <div className="card p-12 text-center">
             <BarChart3 className="w-12 h-12 text-[var(--color-text-secondary)] mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-2">
-              No polls found
+              No polls yet
             </h3>
             <p className="text-[var(--color-text-secondary)] mb-6">
-              {search ? 'Try a different search.' : 'Be the first to create a poll.'}
+              Create your first poll to see it here.
             </p>
             <Link href="/create" className="btn-primary inline-flex gap-2">
               <span>Create poll</span>

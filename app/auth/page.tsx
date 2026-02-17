@@ -58,12 +58,36 @@ export default function AuthPage() {
       const msg = err.message.toLowerCase();
       if (msg.includes('rate limit') || msg.includes('limit exceeded')) {
         setError('Too many requests. Please wait about a minute before requesting another code.');
+      } else if (mode === 'signin' && (msg.includes('user') || msg.includes('not found') || msg.includes('invalid'))) {
+        setError('No account found with this email. Sign up instead.');
       } else {
         setError(err.message);
       }
       return;
     }
     setStep('otp');
+  };
+
+  const handleResendOtp = async () => {
+    if (cooldownUntil > Date.now()) return;
+    setLoading(true);
+    setError(null);
+    setCooldownUntil(Date.now() + 60000);
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email: email.trim(),
+      options: { shouldCreateUser: mode === 'signup' },
+    });
+    setLoading(false);
+    if (err) {
+      const msg = err.message.toLowerCase();
+      if (msg.includes('rate limit') || msg.includes('limit exceeded')) {
+        setError('Too many requests. Please wait about a minute.');
+      } else {
+        setError(err.message);
+      }
+    } else {
+      setError(null);
+    }
   };
 
   const handleVerifyOtp = async (e: React.FormEvent) => {
@@ -230,7 +254,7 @@ export default function AuthPage() {
                   </div>
                 </div>
                 {error && (
-                  <p className="text-sm text-[var(--color-error)]">{error}</p>
+                  <p className="text-sm text-[var(--color-error)]" role="alert">{error}</p>
                 )}
                 <button
                   type="submit"
@@ -273,7 +297,7 @@ export default function AuthPage() {
                   autoComplete="one-time-code"
                 />
                 {error && (
-                  <p className="text-sm text-[var(--color-error)]">{error}</p>
+                  <p className="text-sm text-[var(--color-error)]" role="alert">{error}</p>
                 )}
                 <button
                   type="submit"
@@ -286,13 +310,25 @@ export default function AuthPage() {
                     `Verify & ${mode === 'signin' ? 'Sign in' : 'Sign up'}`
                   )}
                 </button>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] w-full"
-                >
-                  Use a different email
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={loading || cooldownUntil > Date.now()}
+                    className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {cooldownUntil > Date.now()
+                      ? `Resend code in ${Math.ceil((cooldownUntil - Date.now()) / 1000)}s`
+                      : 'Resend code'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={resetForm}
+                    className="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] w-full"
+                  >
+                    Use a different email
+                  </button>
+                </div>
               </form>
             </>
           )}

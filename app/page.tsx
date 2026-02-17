@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { supabase } from '../utils/supabase';
+import { timeAgo } from '../utils/timeAgo';
 import { ArrowRight, BarChart3, Zap, Users, Clock } from 'lucide-react';
 
 type RecentPoll = {
@@ -41,16 +42,6 @@ export default function Home() {
   const totalVotes = (poll: RecentPoll) =>
     poll.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
 
-  const timeAgo = (dateStr: string) => {
-    const diff = now - new Date(dateStr).getTime();
-    const m = Math.floor(diff / 60000);
-    if (m < 1) return 'just now';
-    if (m < 60) return `${m}m ago`;
-    const h = Math.floor(m / 60);
-    if (h < 24) return `${h}h ago`;
-    return `${Math.floor(h / 24)}d ago`;
-  };
-
   return (
     <div className="min-h-screen text-[var(--color-text-primary)]">
       {/* Hero */}
@@ -58,7 +49,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-accent-muted)]/50 text-[var(--color-text-secondary)] text-sm mb-8">
             <Zap className="w-4 h-4 text-[var(--color-accent)]" />
-            <span>Free · No sign-up · Real-time</span>
+            <span>Free · Optional sign-up · Real-time</span>
           </div>
 
           <h1 className="animate-fade-in-up stagger-1 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
@@ -103,7 +94,7 @@ export default function Home() {
               {
                 icon: Zap,
                 title: 'Lightning fast',
-                desc: 'Create polls in under 10 seconds. No accounts or friction.',
+                desc: 'Create polls in under 10 seconds. Sign up optionally to personalize.',
               },
               {
                 icon: BarChart3,
@@ -223,7 +214,7 @@ export default function Home() {
                       </span>
                       <span className="flex items-center gap-1.5">
                         <Clock className="w-3 h-3" />
-                        {timeAgo(poll.created_at)}
+                        {timeAgo(poll.created_at, now)}
                       </span>
                     </div>
                   </div>

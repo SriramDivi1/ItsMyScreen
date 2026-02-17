@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { BarChart2, LogIn, LogOut, ChevronDown } from 'lucide-react';
+import { BarChart2, LogIn, LogOut, ChevronDown, Compass, Plus, FolderOpen } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Navbar() {
@@ -38,6 +38,20 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-2">
+              <Link
+                href="/polls"
+                className="btn-secondary text-sm !py-2 !px-4"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Browse</span>
+              </Link>
+              <Link
+                href="/create"
+                className="btn-primary text-sm !py-2 !px-5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Create poll</span>
+              </Link>
               {!loading && (
                 user ? (
                   <div className="relative" ref={menuRef}>
@@ -55,6 +69,30 @@ export default function Navbar() {
                     </button>
                     {menuOpen && (
                       <div className="absolute right-0 mt-1 py-1 w-48 card shadow-lg">
+                        <Link
+                          href="/polls/mine"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
+                        >
+                          <FolderOpen className="w-4 h-4" />
+                          My polls
+                        </Link>
+                        <Link
+                          href="/create"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
+                        >
+                          <Plus className="w-4 h-4" />
+                          Create poll
+                        </Link>
+                        <Link
+                          href="/polls"
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
+                        >
+                          <Compass className="w-4 h-4" />
+                          Browse polls
+                        </Link>
                         <button
                           onClick={() => {
                             signOut();

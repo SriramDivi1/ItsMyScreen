@@ -3,7 +3,8 @@ create table if not exists public.polls (
   id uuid default gen_random_uuid() primary key,
   question text not null,
   description text,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null
+  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
+  created_by uuid references auth.users(id) on delete set null
 );
 
 create table if not exists public.options (
@@ -99,6 +100,9 @@ create policy "polls_select_all" on public.polls for select using (true);
 
 drop policy if exists "polls_insert_all" on public.polls;
 create policy "polls_insert_all" on public.polls for insert with check (true);
+
+drop policy if exists "polls_delete_own" on public.polls;
+create policy "polls_delete_own" on public.polls for delete using (auth.uid() = created_by);
 
 drop policy if exists "options_select_all" on public.options;
 create policy "options_select_all" on public.options for select using (true);

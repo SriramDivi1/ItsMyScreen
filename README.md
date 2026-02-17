@@ -19,6 +19,7 @@ Create instant polls, share them with anyone, and watch votes roll in live. No s
 - **Share Instantly** — One-click copy poll link to clipboard
 - **Recent Polls Discovery** — Browse and vote on community polls from the home page
 - **Error Handling** — Clean "Poll not found" page for invalid URLs
+- **My Polls** — Signed-in users can view polls they created
 
 ## 🎨 Design Highlights
 
@@ -178,8 +179,9 @@ The app includes two mechanisms to reduce repeat and abusive voting:
 | `/` | Home page — Hero section, "How It Works" steps, recent polls grid |
 | `/create` | Create Poll — Form with character counter, live preview, option management |
 | `/poll/[id]` | Poll View — Vote, see results with animated bars, share link, confetti on vote |
-| `/auth` | Sign in — Email OTP verification |
-| `/auth/complete` | First-time users — Enter first name and last name |
+| `/auth` | Sign in / Sign up — Email OTP verification |
+| `/auth/complete` | First-time sign-in users — Enter first name and last name |
+| `/polls/mine` | My polls — Polls created by the signed-in user |
 
 ---
 
