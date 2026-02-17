@@ -5,9 +5,9 @@ import { BarChart2 } from 'lucide-react';
 
 export default function Navbar() {
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-base)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-base)]/95 backdrop-blur-md border-b border-[var(--color-border)] pt-[env(safe-area-inset-top,0)]">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16">
           <Link
             href="/"
             className="flex items-center gap-2.5 group rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"

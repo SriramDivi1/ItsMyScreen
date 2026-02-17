@@ -65,10 +65,10 @@ export default function BrowsePolls() {
     poll.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
             <span className="gradient-text">Browse polls</span>
           </h1>
           <p className="text-[var(--color-text-secondary)]">
@@ -76,7 +76,7 @@ export default function BrowsePolls() {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-secondary)]" />
             <input
@@ -84,14 +84,14 @@ export default function BrowsePolls() {
               placeholder="Search polls..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="input-field pl-11"
+              className="input-field pl-11 min-h-[44px] min-w-0"
               aria-label="Search polls"
             />
           </div>
           <select
             value={sort}
             onChange={(e) => setSort(e.target.value as 'recent' | 'votes')}
-            className="input-field w-full sm:w-44"
+            className="input-field w-full sm:w-44 min-h-[44px]"
             aria-label="Sort by"
           >
             <option value="recent">Most recent</option>

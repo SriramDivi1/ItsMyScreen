@@ -45,14 +45,14 @@ export default function Home() {
   return (
     <div className="min-h-screen text-[var(--color-text-primary)]">
       {/* Hero */}
-      <section className="relative pt-24 pb-16 sm:pt-28 sm:pb-24 px-4">
+      <section className="relative pt-20 pb-12 sm:pt-24 sm:pb-16 md:pt-28 md:pb-24 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
           <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-accent-muted)]/50 text-[var(--color-text-secondary)] text-sm mb-8">
             <Zap className="w-4 h-4 text-[var(--color-accent)]" />
             <span>Free · No sign-up · Real-time</span>
           </div>
 
-          <h1 className="animate-fade-in-up stagger-1 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
+          <h1 className="animate-fade-in-up stagger-1 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
             <span className="gradient-text">Instant polls.</span>
             <br />
             <span className="text-[var(--color-text-primary)]">Live results.</span>
@@ -87,9 +87,9 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="py-16 sm:py-20 px-4 bg-[var(--color-surface)] border-y border-[var(--color-border)]">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6 bg-[var(--color-surface)] border-y border-[var(--color-border)]">
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {[
               {
                 icon: Zap,
@@ -123,7 +123,7 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="py-16 sm:py-20 px-4">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center mb-12">
           <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] mb-2">
             How it works
@@ -151,7 +151,7 @@ export default function Home() {
       </section>
 
       {/* Recent polls */}
-      <section className="py-16 sm:py-20 px-4">
+      <section className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] mb-2">

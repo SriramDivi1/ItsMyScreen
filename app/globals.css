@@ -23,9 +23,14 @@
     font-family: var(--font-dm-sans), system-ui, sans-serif;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: var(--color-base);
     color: var(--color-text-primary);
+    padding-bottom: env(safe-area-inset-bottom, 0);
   }
 
   ::selection {
@@ -71,6 +76,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    min-height: 44px;
     padding: 12px 24px;
     font-weight: 600;
     color: white;
@@ -101,6 +107,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    min-height: 44px;
     padding: 12px 24px;
     font-weight: 600;
     color: #292524;
@@ -126,12 +133,13 @@
 
   .input-field {
     width: 100%;
+    min-height: 44px;
     padding: 12px 16px;
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: 10px;
     color: var(--color-text-primary);
-    font-size: 15px;
+    font-size: 16px;
     outline: none;
     transition: all 0.2s ease;
   }

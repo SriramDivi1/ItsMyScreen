@@ -1,10 +1,17 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
 const dmSans = DM_Sans({ subsets: ["latin"], variable: "--font-dm-sans" });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#c2410c",
+};
 
 export const metadata: Metadata = {
   title: "ItsMyScreen — Real-time Polls",
@@ -34,7 +41,7 @@ export default function RootLayout({
     <html lang="en" className={dmSans.variable}>
       <body className={`${dmSans.className} antialiased flex flex-col min-h-screen`}>
         <Navbar />
-        <main className="flex-1 pt-20 relative z-10">{children}</main>
+        <main className="flex-1 pt-14 sm:pt-16 relative z-10">{children}</main>
         <Footer />
       </body>
     </html>

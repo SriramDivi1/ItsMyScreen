@@ -262,11 +262,11 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
     }
 
     return (
-        <div className="min-h-screen pt-24 pb-16 px-4 flex flex-col items-center print:pt-4 print:pb-4">
+        <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6 flex flex-col items-center print:pt-4 print:pb-4">
             {showConfetti && <Confetti />}
 
             {toast && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-toast" role="status" aria-live="polite">
+                <div className="fixed bottom-6 left-4 right-4 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:max-w-md z-50 animate-toast pb-[env(safe-area-inset-bottom,0)]" role="status" aria-live="polite">
                     <div className={`card px-5 py-3 flex items-center gap-2 text-sm font-medium shadow-lg ${toastVariant === 'warning' ? 'border-[var(--color-accent)]/50' : ''}`}>
                         {toastVariant === 'warning' ? (
                             <AlertCircle className="w-4 h-4 text-[var(--color-accent)]" />
@@ -279,15 +279,15 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
             )}
 
             <div className="w-full max-w-2xl">
-                <div className="flex items-center justify-between mb-6 print:hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 print:hidden">
                     <Link
                         href="/"
-                        className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors"
+                        className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors min-h-[44px] sm:min-h-0"
                     >
                         <ChevronLeft className="w-4 h-4" />
                         Back
                     </Link>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <button
                             onClick={() => fetchPollData()}
                             className="p-2 rounded-lg hover:bg-[var(--color-base)] text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2"
@@ -302,9 +302,9 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                     </div>
                 </div>
 
-                <div className="gradient-border-card p-6 sm:p-8">
+                <div className="gradient-border-card p-4 sm:p-6 md:p-8">
                     <div className="mb-6">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-text-primary)] mb-3 print:text-black">
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] mb-3 print:text-black">
                             {poll.question}
                         </h1>
                         {poll.description && (
@@ -330,13 +330,13 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                     key={option.id}
                                     onClick={() => handleVote(option.id)}
                                     disabled={voting}
-                                    className={`w-full text-left rounded-xl p-4 transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${isVoted
+                                    className={`w-full text-left rounded-xl p-4 min-h-[48px] sm:min-h-0 transition-all duration-300 border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] focus-visible:ring-offset-2 ${isVoted
                                             ? 'bg-[var(--color-accent-muted)]/30 border-[var(--color-accent)]/40'
                                             : 'bg-[var(--color-base)] border-[var(--color-border)] hover:border-[var(--color-accent)]/30 hover:bg-[var(--color-accent-muted)]/10'
                                         }`}
                                 >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-3">
+                                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-0">
+                                        <div className="flex items-center gap-3 min-w-0">
                                             {!hasVoted ? (
                                                 <div
                                                     className={`w-5 h-5 rounded-full border-2 flex-shrink-0 ${voting ? 'border-[var(--color-border)]' : 'border-[var(--color-text-secondary)]'
@@ -350,7 +350,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                                                 <div className="w-5 h-5 rounded-full border-2 border-[var(--color-border)] flex-shrink-0" />
                                             )}
                                             <span
-                                                className={`font-medium ${isVoted
+                                                className={`font-medium break-words ${isVoted
                                                         ? 'text-[var(--color-text-primary)]'
                                                         : isLeader && hasVoted
                                                             ? 'text-[var(--color-accent)]'
@@ -409,22 +409,22 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
                         <div className="flex flex-wrap items-center gap-2">
                             <button
                                 onClick={() => setShowQr(!showQr)}
-                                className={`btn-secondary !py-2 !px-4 text-sm ${showQr ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)]/20' : ''}`}
+                                className={`btn-secondary !py-2.5 !px-4 text-sm min-h-[44px] ${showQr ? 'border-[var(--color-accent)] bg-[var(--color-accent-muted)]/20' : ''}`}
                                 aria-label={showQr ? 'Hide QR code' : 'Show QR code'}
                                 aria-pressed={showQr}
                             >
                                 <QrCode className="w-3.5 h-3.5" />
                                 QR
                             </button>
-                            <button onClick={exportCsv} className="btn-secondary !py-2 !px-4 text-sm" aria-label="Export results as CSV">
+                            <button onClick={exportCsv} className="btn-secondary !py-2.5 !px-4 text-sm min-h-[44px]" aria-label="Export results as CSV">
                                 <Download className="w-3.5 h-3.5" />
                                 CSV
                             </button>
-                            <button onClick={() => window.print()} className="btn-secondary !py-2 !px-4 text-sm" aria-label="Print poll">
+                            <button onClick={() => window.print()} className="btn-secondary !py-2.5 !px-4 text-sm min-h-[44px]" aria-label="Print poll">
                                 <Printer className="w-3.5 h-3.5" />
                                 Print
                             </button>
-                            <button onClick={copyLink} className="btn-secondary !py-2 !px-4 text-sm" aria-label={copied ? 'Link copied' : 'Copy poll link'}>
+                            <button onClick={copyLink} className="btn-secondary !py-2.5 !px-4 text-sm min-h-[44px]" aria-label={copied ? 'Link copied' : 'Copy poll link'}>
                                 {copied ? (
                                     <>
                                         <Check className="w-3.5 h-3.5 text-[var(--color-success)]" />

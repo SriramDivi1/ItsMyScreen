@@ -75,18 +75,18 @@ export default function CreatePoll() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-16 px-4">
+    <div className="min-h-screen pt-20 sm:pt-24 pb-12 sm:pb-16 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] mb-2">
             <span className="gradient-text">Create your poll</span>
           </h1>
           <p className="text-[var(--color-text-secondary)]">Ask anything. Get instant results.</p>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-8">
+        <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
           {/* Form */}
-          <div className="flex-1 card p-6 sm:p-8">
+          <div className="flex-1 card p-4 sm:p-6 md:p-8">
             <div className="mb-6">
               <label className="block text-sm font-medium text-[var(--color-text-secondary)] mb-2">
                 Start from template
@@ -101,7 +101,7 @@ export default function CreatePoll() {
                       setOptions([...t.options, '']);
                       setDescription('');
                     }}
-                    className="px-3 py-2 rounded-lg text-xs font-medium border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent-muted)]/30 transition-colors text-[var(--color-text-primary)]"
+                    className="px-3 py-2.5 min-h-[40px] rounded-lg text-xs font-medium border border-[var(--color-border)] hover:border-[var(--color-accent)]/50 hover:bg-[var(--color-accent-muted)]/30 transition-colors text-[var(--color-text-primary)]"
                   >
                     {t.label}
                   </button>
@@ -255,8 +255,8 @@ export default function CreatePoll() {
           </div>
 
           {/* Preview */}
-          <div className="lg:w-[360px] flex-shrink-0">
-            <div className="card-elevated p-6 sticky top-28">
+          <div className="w-full lg:w-[360px] flex-shrink-0">
+            <div className="card-elevated p-4 sm:p-6 sticky top-24 sm:top-28">
               <div className="flex items-center gap-2 text-sm font-medium text-[var(--color-text-secondary)] mb-5">
                 <Eye className="w-4 h-4 text-[var(--color-accent)]" />
                 Live preview
