@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { supabase } from '../../../utils/supabase';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { ArrowRight, Users, Clock, BarChart3 } from 'lucide-react';
 import { timeAgo } from '../../../utils/timeAgo';
 
