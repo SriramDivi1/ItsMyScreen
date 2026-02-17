@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
 import Link from 'next/link';
@@ -19,6 +19,20 @@ export default function AuthPage() {
   const [step, setStep] = useState<Step>('form');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [cooldownUntil, setCooldownUntil] = useState(0);
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    if (cooldownUntil <= 0) return;
+    const t = setInterval(() => {
+      const remaining = Math.ceil((cooldownUntil - Date.now()) / 1000);
+      if (remaining <= 0) {
+        setCooldownUntil(0);
+      }
+      setTick((x) => x + 1);
+    }, 1000);
+    return () => clearInterval(t);
+  }, [cooldownUntil]);
 
   const resetForm = () => {
     setStep('form');
@@ -40,7 +54,13 @@ export default function AuthPage() {
     setLoading(false);
 
     if (err) {
-      setError(err.message);
+      const msg = err.message.toLowerCase();
+      if (msg.includes('rate limit') || msg.includes('limit exceeded')) {
+        setError('Too many requests. Please wait about a minute before requesting another code.');
+        setCooldownUntil(Date.now() + 60000);
+      } else {
+        setError(err.message);
+      }
       return;
     }
     setStep('otp');
@@ -214,11 +234,13 @@ export default function AuthPage() {
                 )}
                 <button
                   type="submit"
-                  disabled={loading}
-                  className="btn-primary w-full"
+                  disabled={loading || cooldownUntil > Date.now()}
+                  className="btn-primary w-full disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : cooldownUntil > Date.now() ? (
+                    `Request again in ${Math.ceil((cooldownUntil - Date.now()) / 1000)}s`
                   ) : (
                     'Send code'
                   )}
