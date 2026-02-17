@@ -14,10 +14,7 @@ type RecentPoll = {
 
 export default function Home() {
   const [recentPolls, setRecentPolls] = useState<RecentPoll[]>([]);
-
-  useEffect(() => {
-    fetchRecentPolls();
-  }, []);
+  const [now, setNow] = useState(() => Date.now());
 
   const fetchRecentPolls = async () => {
     const { data } = await supabase
@@ -28,11 +25,21 @@ export default function Home() {
     if (data) setRecentPolls(data);
   };
 
+  useEffect(() => {
+    const t = setTimeout(() => fetchRecentPolls(), 0);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(id);
+  }, []);
+
   const totalVotes = (poll: RecentPoll) =>
     poll.options?.reduce((s, o) => s + o.vote_count, 0) ?? 0;
 
   const timeAgo = (dateStr: string) => {
-    const diff = Date.now() - new Date(dateStr).getTime();
+    const diff = now - new Date(dateStr).getTime();
     const m = Math.floor(diff / 60000);
     if (m < 1) return 'just now';
     if (m < 60) return `${m}m ago`;
