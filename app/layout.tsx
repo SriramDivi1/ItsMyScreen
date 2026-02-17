@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "ItsMyScreen — Real-time Polls",
   description:
     "Create instant polls, share them with anyone, and watch votes roll in live. No sign-up required. Powered by Next.js & Supabase.",
-  metadataBase: new URL("https://itsmyscreen.vercel.app"),
+  metadataBase: new URL("https://itsmyscreen-by-sriram.vercel.app"),
   openGraph: {
     title: "ItsMyScreen — Real-time Polls",
     description:
