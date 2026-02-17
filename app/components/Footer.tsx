@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-4 text-center sm:text-left">
           <div className="flex items-center gap-2 text-sm text-[var(--color-text-secondary)]">
             <BarChart2 className="w-4 h-4 text-[var(--color-accent)]" />
-            <span>Built with Next.js & Supabase</span>
+            <span>Built with ❤️ By Sriram using Next.js & Supabase</span>
           </div>
           <div className="flex items-center gap-6 text-sm text-[var(--color-text-secondary)]">
             <a
