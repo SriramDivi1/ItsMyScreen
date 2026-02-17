@@ -3,7 +3,6 @@
 import { use, useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { supabase } from '../../../utils/supabase';
-import { useAuth } from '../../contexts/AuthContext';
 import Link from 'next/link';
 import { QRCodeSVG } from 'qrcode.react';
 import {
@@ -22,7 +21,6 @@ const Confetti = dynamic(() => import('../../components/Confetti'), { ssr: false
 
 export default function PollPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = use(params);
-    const { user } = useAuth();
     const [poll, setPoll] = useState<{
         id: string;
         question: string;
@@ -54,9 +52,8 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
         setTimeout(() => setToast(null), 3500);
     };
 
-    const getVoterToken = useCallback(() => {
-        if (user) return `user:${user.id}`;
-        try {
+  const getVoterToken = useCallback(() => {
+    try {
             let token = localStorage.getItem('voter_token');
             if (!token) {
                 token = crypto.randomUUID();
@@ -66,7 +63,7 @@ export default function PollPage({ params }: { params: Promise<{ id: string }> }
         } catch {
             return `session-${crypto.randomUUID()}`;
         }
-    }, [user]);
+    }, []);
 
     const fetchPollData = useCallback(async () => {
         const { data: pollData, error: pollError } = await supabase

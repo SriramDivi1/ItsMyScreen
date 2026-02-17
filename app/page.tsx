@@ -49,7 +49,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto text-center">
           <div className="animate-fade-in-up inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-accent-muted)]/50 text-[var(--color-text-secondary)] text-sm mb-8">
             <Zap className="w-4 h-4 text-[var(--color-accent)]" />
-            <span>Free · Optional sign-up · Real-time</span>
+            <span>Free · No sign-up · Real-time</span>
           </div>
 
           <h1 className="animate-fade-in-up stagger-1 text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
@@ -94,7 +94,7 @@ export default function Home() {
               {
                 icon: Zap,
                 title: 'Lightning fast',
-                desc: 'Create polls in under 10 seconds. Sign up optionally to personalize.',
+                desc: 'Create polls in under 10 seconds. No accounts or friction.',
               },
               {
                 icon: BarChart3,

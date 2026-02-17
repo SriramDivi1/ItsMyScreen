@@ -1,25 +1,9 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { BarChart2, LogIn, LogOut, ChevronDown, Compass, Plus, FolderOpen } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { BarChart2 } from 'lucide-react';
 
 export default function Navbar() {
-  const { user, profile, loading, signOut } = useAuth();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const close = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpen(false);
-      }
-    };
-    document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
-  }, []);
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[var(--color-base)]/80 backdrop-blur-md border-b border-[var(--color-border)]">
       <div className="mx-auto max-w-5xl px-4 sm:px-6">
@@ -36,87 +20,6 @@ export default function Navbar() {
               <span className="gradient-text">ItsMyScreen</span>
             </span>
           </Link>
-
-          <div className="flex items-center gap-2">
-              <Link
-                href="/polls"
-                className="btn-secondary text-sm !py-2 !px-4"
-              >
-                <Compass className="w-4 h-4" />
-                <span>Browse</span>
-              </Link>
-              <Link
-                href="/create"
-                className="btn-primary text-sm !py-2 !px-5"
-              >
-                <Plus className="w-4 h-4" />
-                <span>Create poll</span>
-              </Link>
-              {!loading && (
-                user ? (
-                  <div className="relative" ref={menuRef}>
-                    <button
-                      onClick={() => setMenuOpen((o) => !o)}
-                      className="flex items-center gap-2 btn-secondary text-sm !py-2 !px-4"
-                      aria-expanded={menuOpen}
-                      aria-haspopup="true"
-                      aria-label="Account menu"
-                    >
-                      <span className="truncate max-w-[100px]">
-                        {profile ? `${profile.first_name} ${profile.last_name}` : (user?.email ?? 'Account')}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
-                    </button>
-                    {menuOpen && (
-                      <div className="absolute right-0 mt-1 py-1 w-48 card shadow-lg">
-                        <Link
-                          href="/polls/mine"
-                          onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
-                        >
-                          <FolderOpen className="w-4 h-4" />
-                          My polls
-                        </Link>
-                        <Link
-                          href="/create"
-                          onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
-                        >
-                          <Plus className="w-4 h-4" />
-                          Create poll
-                        </Link>
-                        <Link
-                          href="/polls"
-                          onClick={() => setMenuOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
-                        >
-                          <Compass className="w-4 h-4" />
-                          Browse polls
-                        </Link>
-                        <button
-                          onClick={() => {
-                            signOut();
-                            setMenuOpen(false);
-                          }}
-                          className="w-full flex items-center gap-2 px-4 py-2 text-sm text-[var(--color-text-primary)] hover:bg-[var(--color-base)] transition-colors"
-                        >
-                          <LogOut className="w-4 h-4" />
-                          Sign out
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <Link
-                    href="/auth"
-                    className="btn-primary text-sm !py-2 !px-5"
-                  >
-                    <LogIn className="w-4 h-4" />
-                    <span>Get started</span>
-                  </Link>
-                )
-              )}
-            </div>
         </div>
       </div>
     </nav>

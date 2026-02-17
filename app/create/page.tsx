@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '../../utils/supabase';
 import { sanitizeText } from '../../utils/sanitize';
-import { useAuth } from '../contexts/AuthContext';
 import { PenLine, Plus, Trash2, Loader2, Eye } from 'lucide-react';
 
 const MAX_QUESTION_LENGTH = 200;
@@ -20,7 +19,6 @@ const POLL_TEMPLATES = [
 
 export default function CreatePoll() {
   const router = useRouter();
-  const { user } = useAuth();
   const [question, setQuestion] = useState('');
   const [description, setDescription] = useState('');
   const [options, setOptions] = useState(['', '']);
@@ -46,7 +44,7 @@ export default function CreatePoll() {
       .insert({
         question: sanitizedQuestion,
         description: sanitizedDescription || null,
-        created_by: user?.id ?? null,
+        created_by: null,
       })
       .select()
       .single();
@@ -62,7 +60,6 @@ export default function CreatePoll() {
     );
 
     if (optionsError) {
-      if (user) await supabase.from('polls').delete().eq('id', poll.id);
       setCreateError('Could not save options. Please try again.');
       setLoading(false);
       return;
