@@ -1,5 +1,3 @@
-# Notes / README (Submission)
-
 Copy the content below into the "Notes / README" field of the submission form.
 
 ---

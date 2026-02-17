@@ -120,25 +120,6 @@ supabase/            # schema.sql, migrations
 
 ---
 
-## 📋 Assignment Checklist
-
-| Requirement | ✓ |
-|-------------|---|
-| Poll creation (question + 2+ options, shareable link) | ✓ |
-| Join by link, single-choice vote | ✓ |
-| Real-time results (no manual refresh) | ✓ |
-| Two fairness/anti-abuse mechanisms | ✓ |
-| Persistence (polls + votes survive refresh) | ✓ |
-| Deployed, publicly accessible | ✓ |
-
----
-
-# Notes / README (Submission)
-
-> For the Google Form — copy this section into "Notes / README", or use the standalone **[NOTES.md](NOTES.md)** file.
-
----
-
 ## Your two fairness / anti-abuse mechanisms
 
 ### 1. Voter token (one vote per device)
@@ -186,4 +167,4 @@ supabase/            # schema.sql, migrations
   <a href="https://itsmyscreen-by-sriram.vercel.app">Live Demo</a> · 
   <a href="https://github.com/SriramDivi1/ItsMyScreen">GitHub</a>
 </p>
-<p align="center">Built with Next.js & Supabase</p>
+<p align="center">Built with ❤️ By Sriram Using Next.js & Supabase</p>
