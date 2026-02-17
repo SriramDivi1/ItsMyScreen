@@ -13,7 +13,7 @@ Create instant polls, share them with anyone, and watch votes roll in live. No s
 
 - **Instant Poll Creation** — Create a poll in under 10 seconds with a question and up to 10 options
 - **Real-time Voting** — Votes update live for all viewers using Supabase Realtime subscriptions
-- **Optional Sign-in** — Email OTP sign-in with first/last name for first-time users; anonymous voting still works
+- **Simple sign-in** — Enter first name, last name, and email to continue; no OTP (can be added later)
 - **One Vote Per Person** — Uses browser tokens or user ID when signed in to prevent duplicate voting
 - **Live Results** — Animated progress bars, percentages, and vote counts update in real-time
 - **Share Instantly** — One-click copy poll link to clipboard
@@ -46,7 +46,20 @@ Create instant polls, share them with anyone, and watch votes roll in live. No s
 
 ---
 
-## 📁 Project Structure
+## � Key Concepts & Skills Implemented
+
+This project demonstrates proficiency in modern full-stack development, including:
+
+- **Real-time Data Synchronization**: Leveraging Supabase Realtime subscriptions to push updates to clients instantly.
+- **Optimistic UI Updates**: Providing immediate feedback to users while background requests process, enhancing perceived performance.
+- **Database Row Level Security (RLS)**: Securing user data at the database layer to prevent unauthorized access.
+- **Responsive & Adaptive Design**: Building a complex UI that works seamlessly across all device sizes using Tailwind CSS.
+- **Authentication Flow**: Hybrid authentication system supporting both anonymous users (for voting) and authenticated sessions (for poll management) via Supabase Auth (OTP).
+- **Modern React Patterns**: Extensive use of React Hooks (`useReducer`, `useOptimistic`), Context API, and Server Components.
+
+---
+
+## �📁 Project Structure
 
 ```
 ItsMyScreen/
@@ -106,7 +119,7 @@ npm install
    - **Option A (SQL Editor, recommended):** Run `npm run db:sql` to print the SQL, then paste it into **Supabase → SQL Editor** and run.
    - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password npm run db:apply`. For pooler: `SUPABASE_DB_USE_POOLER=1 SUPABASE_DB_PASSWORD=... npm run db:apply`
 3. Copy your project URL and Anon Key from **Settings → API**
-4. Enable Email OTP (optional, for sign-in): In **Authentication → Providers → Email**, enable the provider. For OTP codes (6-digit), ensure the "Magic Link" or "Email OTP" template in **Authentication → Email Templates** includes `{{ .Token }}` so users receive the code.
+4. Enable Anonymous sign-in: In **Authentication → Providers**, enable **Anonymous** sign-ins. (OTP/Email auth can be added later.)
 
 ### 5. Configure Environment Variables
 
@@ -179,8 +192,7 @@ The app includes two mechanisms to reduce repeat and abusive voting:
 | `/` | Home page — Hero section, "How It Works" steps, recent polls grid |
 | `/create` | Create Poll — Form with character counter, live preview, option management |
 | `/poll/[id]` | Poll View — Vote, see results with animated bars, share link, confetti on vote |
-| `/auth` | Sign in / Sign up — Email OTP verification |
-| `/auth/complete` | First-time sign-in users — Enter first name and last name |
+| `/auth` | Get started — First name, last name, email → dashboard |
 | `/polls/mine` | My polls — Polls created by the signed-in user |
 
 ---

@@ -2,6 +2,20 @@
   "name": "poll-app",
   "version": "0.1.0",
   "private": true,
+  "description": "A real-time, futuristic polling application built with Next.js 16, Supabase, and Tailwind CSS.",
+  "keywords": [
+    "nextjs",
+    "react",
+    "supabase",
+    "tailwindcss",
+    "realtime",
+    "polling",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SriramDivi1/ItsMyScreen.git"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -63,7 +63,7 @@ export default function Navbar() {
                       aria-label="Account menu"
                     >
                       <span className="truncate max-w-[100px]">
-                        {profile ? `${profile.first_name} ${profile.last_name}` : user.email}
+                        {profile ? `${profile.first_name} ${profile.last_name}` : (user?.email ?? 'Account')}
                       </span>
                       <ChevronDown className={`w-4 h-4 transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
                     </button>
@@ -112,7 +112,7 @@ export default function Navbar() {
                     className="btn-primary text-sm !py-2 !px-5"
                   >
                     <LogIn className="w-4 h-4" />
-                    <span>Sign in / Sign up</span>
+                    <span>Get started</span>
                   </Link>
                 )
               )}
