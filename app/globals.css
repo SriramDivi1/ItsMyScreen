@@ -480,7 +480,7 @@
 @media print {
   nav,
   footer,
-  .print\\:hidden {
+  .print\:hidden {
     display: none !important;
   }
 

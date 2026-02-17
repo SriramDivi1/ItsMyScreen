@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import Link from 'next/link';
-import { supabase } from '../utils/supabase';
+import { supabase } from '../../utils/supabase';
 import { ArrowRight, Search, Users, Clock, BarChart3 } from 'lucide-react';
 
 type Poll = {

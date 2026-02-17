@@ -7,8 +7,15 @@ const util = require('util');
 
 const lookup = util.promisify(dns.lookup);
 
-const host = 'db.wvxfiltkomnejscbzalo.supabase.co';
-const password = 'YOUR_DB_PASSWORD_HERE'; // Update with your new Supabase database password
+// Use SUPABASE_DB_PASSWORD env var, or update the default for your project
+const host = process.env.SUPABASE_DB_HOST || 'db.wvxfiltkomnejscbzalo.supabase.co';
+const password = process.env.SUPABASE_DB_PASSWORD || 'YOUR_DB_PASSWORD_HERE';
+
+if (password === 'YOUR_DB_PASSWORD_HERE') {
+    console.error('Set SUPABASE_DB_PASSWORD env var or update the password in this script.');
+    process.exit(1);
+}
+
 const encodedPassword = encodeURIComponent(password);
 
 async function runSchema() {
@@ -37,12 +44,24 @@ async function runSchema() {
         await client.connect();
         console.log('Connected to database.');
 
-        const sqlPath = path.join(__dirname, '../supabase/schema.sql');
-        const sql = fs.readFileSync(sqlPath, 'utf8');
+        const schemaPath = path.join(__dirname, '../supabase/schema.sql');
+        const schemaSql = fs.readFileSync(schemaPath, 'utf8');
 
         console.log('Running schema...');
-        await client.query(sql);
-        console.log('Schema applied successfully.');
+        await client.query(schemaSql);
+
+        const migrationsDir = path.join(__dirname, '../supabase/migrations');
+        if (fs.existsSync(migrationsDir)) {
+            const files = fs.readdirSync(migrationsDir).filter(f => f.endsWith('.sql')).sort();
+            for (const file of files) {
+                const migrationPath = path.join(migrationsDir, file);
+                const migrationSql = fs.readFileSync(migrationPath, 'utf8');
+                console.log(`Running migration: ${file}`);
+                await client.query(migrationSql);
+            }
+        }
+
+        console.log('Schema and migrations applied successfully.');
         await client.end();
     } catch (err) {
         console.error('Error applying schema:', err);

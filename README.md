@@ -96,7 +96,9 @@ npm install
 ### 3. Set Up Supabase
 
 1. Create a new project at [supabase.com](https://supabase.com/)
-2. Go to **SQL Editor** and run the contents of `supabase/schema.sql` to create the required tables and functions
+2. Apply the database schema:
+   - **Option A (SQL Editor):** Go to **SQL Editor** and run the contents of `supabase/schema.sql`
+   - **Option B (Script):** Run `SUPABASE_DB_PASSWORD=your_password node scripts/apply-schema.js` (set `SUPABASE_DB_HOST` if different)
 3. Copy your project URL and Anon Key from **Settings → API**
 
 ### 4. Configure Environment Variables

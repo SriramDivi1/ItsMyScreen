@@ -2,6 +2,7 @@
 create table if not exists public.polls (
   id uuid default gen_random_uuid() primary key,
   question text not null,
+  description text,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null
 );
 
@@ -21,22 +22,75 @@ create table if not exists public.votes (
   unique(poll_id, voter_token)
 );
 
--- Realtime
-alter publication supabase_realtime add table public.polls;
-alter publication supabase_realtime add table public.options;
-alter publication supabase_realtime add table public.votes;
+-- Realtime (ignore if tables already in publication)
+do $$
+begin
+  alter publication supabase_realtime add table public.polls;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.options;
+exception when duplicate_object then null;
+end $$;
+do $$
+begin
+  alter publication supabase_realtime add table public.votes;
+exception when duplicate_object then null;
+end $$;
 
 -- RPC for atomic voting
 create or replace function vote(p_poll_id uuid, p_option_id uuid, p_voter_token text)
 returns void as $$
 begin
-  -- Insert vote (will fail if unique constraint violated)
   insert into public.votes (poll_id, option_id, voter_token)
   values (p_poll_id, p_option_id, p_voter_token);
-  
-  -- Increment vote count
+
   update public.options
   set vote_count = vote_count + 1
   where id = p_option_id;
 end;
 $$ language plpgsql;
+
+-- RPC to change vote
+create or replace function change_vote(p_poll_id uuid, p_old_option_id uuid, p_new_option_id uuid, p_voter_token text)
+returns void as $$
+begin
+  delete from public.votes
+  where poll_id = p_poll_id and voter_token = p_voter_token;
+
+  update public.options
+  set vote_count = vote_count - 1
+  where id = p_old_option_id and vote_count > 0;
+
+  insert into public.votes (poll_id, option_id, voter_token)
+  values (p_poll_id, p_new_option_id, p_voter_token);
+
+  update public.options
+  set vote_count = vote_count + 1
+  where id = p_new_option_id;
+end;
+$$ language plpgsql;
+
+-- Row Level Security
+alter table public.polls enable row level security;
+alter table public.options enable row level security;
+alter table public.votes enable row level security;
+
+drop policy if exists "polls_select_all" on public.polls;
+create policy "polls_select_all" on public.polls for select using (true);
+
+drop policy if exists "polls_insert_all" on public.polls;
+create policy "polls_insert_all" on public.polls for insert with check (true);
+
+drop policy if exists "options_select_all" on public.options;
+create policy "options_select_all" on public.options for select using (true);
+
+drop policy if exists "options_insert_all" on public.options;
+create policy "options_insert_all" on public.options for insert with check (true);
+
+drop policy if exists "votes_select_all" on public.votes;
+create policy "votes_select_all" on public.votes for select using (true);
+
+drop policy if exists "votes_insert_all" on public.votes;
+create policy "votes_insert_all" on public.votes for insert with check (true);
