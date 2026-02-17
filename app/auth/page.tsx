@@ -47,6 +47,7 @@ export default function AuthPage() {
 
     setLoading(true);
     setError(null);
+    setCooldownUntil(Date.now() + 60000);
     const { error: err } = await supabase.auth.signInWithOtp({
       email: email.trim(),
       options: { shouldCreateUser: mode === 'signup' },
@@ -57,7 +58,6 @@ export default function AuthPage() {
       const msg = err.message.toLowerCase();
       if (msg.includes('rate limit') || msg.includes('limit exceeded')) {
         setError('Too many requests. Please wait about a minute before requesting another code.');
-        setCooldownUntil(Date.now() + 60000);
       } else {
         setError(err.message);
       }
